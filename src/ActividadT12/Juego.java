@@ -5,10 +5,11 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
+import java.awt.BorderLayout;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
-public class UNO extends JFrame {
+public class Juego extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -20,7 +21,7 @@ public class UNO extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UNO frame = new UNO();
+					Juego frame = new Juego();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,25 +33,29 @@ public class UNO extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UNO() {
+	public Juego() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		contentPane.add(panel);
+		contentPane.add(panel, BorderLayout.NORTH);
 		
+		JPanel panel_1 = new JPanel();
+		contentPane.add(panel_1, BorderLayout.WEST);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		contentPane.add(lblNewLabel);
+		JLabel lblNewLabel = new JLabel("Jugador 1");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_1.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		contentPane.add(lblNewLabel_1);
+		JPanel panel_2 = new JPanel();
+		contentPane.add(panel_2, BorderLayout.EAST);
 		
-		JButton btnNewButton = new JButton("New button");
-		contentPane.add(btnNewButton);
+		JPanel panel_3 = new JPanel();
+		contentPane.add(panel_3, BorderLayout.SOUTH);
 
 	}
 
