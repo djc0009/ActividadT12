@@ -42,6 +42,8 @@ public class UNO extends JFrame {
 		JPanel panel = new JPanel();
 		contentPane.add(panel);
 		
+		Jpanle
+		
 		JLabel lblNewLabel = new JLabel("New label");
 		contentPane.add(lblNewLabel);
 		
