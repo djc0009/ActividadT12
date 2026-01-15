@@ -29,7 +29,7 @@ public class Blackjack1 extends JFrame {
 				}
 			}
 		});
-	}
+	}hfdtngf
 
 	/**
 	 * Create the frame.
