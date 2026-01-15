@@ -40,7 +40,6 @@ public class Juego extends JFrame {
 		crearBotones();
 	}
 
-	// ---------------- MÉTODOS ----------------
 
 	private void configurarVentana() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,8 +61,12 @@ public class Juego extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 5, 0, 0)); 
 		contentPane.add(panel, BorderLayout.CENTER);
+		
+		int numImagenes = 5;
+		ImageIcon[] ArrayImagenes = new ImageIcon[numImagenes];
+		String [] rutas = {"elefante.png", "hippo.png", "mono.png", "oso.png", "panda.png"};
+		
 
-		// --------- Tus 10 botones ---------
 		JButton btnNewButton = new JButton("New button");
 		panel.add(btnNewButton);
 		mostrarImagenAlClic(btnNewButton, "src/ActividadT12/foto1.png");
@@ -105,13 +108,11 @@ public class Juego extends JFrame {
 		mostrarImagenAlClic(btnNewButton_9, "src/ActividadT12/foto10.png");
 	}
 
-	// ---------------- MÉTODO PARA MOSTRAR IMAGEN ----------------
-
 	private void mostrarImagenAlClic(JButton boton, String rutaImagen) {
 		boton.addActionListener(e -> {
 			ImageIcon icono = new ImageIcon(rutaImagen);
 			boton.setIcon(icono);
-			boton.setText(""); // Quitamos el texto del botón
+			boton.setText("");
 		});
 	}
 }
