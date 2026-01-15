@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 
-public class Juego extends JFrame {
+public class Juego1 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -23,7 +23,7 @@ public class Juego extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
-				Juego frame = new Juego();
+				Juego1 frame = new Juego1();
 				frame.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -34,7 +34,7 @@ public class Juego extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Juego() {
+	public Juego1() {
 		configurarVentana();
 		crearTitulo();
 		crearBotones();
