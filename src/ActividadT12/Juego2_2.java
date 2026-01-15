@@ -17,7 +17,7 @@ import javax.swing.Timer;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Juego2 extends JFrame {
+public class Juego2_2 extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -39,7 +39,7 @@ public class Juego2 extends JFrame {
         });
     }
 
-    public Juego2() {
+    public Juego2_2() {
         configurarVentana();
         crearTitulo();
         prepararCartas();
