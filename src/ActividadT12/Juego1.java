@@ -12,7 +12,11 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 
+<<<<<<<< HEAD:src/ActividadT12/Juego2.java
+public class Juego2 extends JFrame {
+========
 public class Juego1 extends JFrame {
+>>>>>>>> 452f719c6f19d3d07a50b126023eb57a8d142e03:src/ActividadT12/Juego1.java
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -23,7 +27,11 @@ public class Juego1 extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
 			try {
+<<<<<<<< HEAD:src/ActividadT12/Juego2.java
+				Juego2 frame = new Juego2();
+========
 				Juego1 frame = new Juego1();
+>>>>>>>> 452f719c6f19d3d07a50b126023eb57a8d142e03:src/ActividadT12/Juego1.java
 				frame.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -34,7 +42,11 @@ public class Juego1 extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+<<<<<<<< HEAD:src/ActividadT12/Juego2.java
+	public Juego2() {
+========
 	public Juego1() {
+>>>>>>>> 452f719c6f19d3d07a50b126023eb57a8d142e03:src/ActividadT12/Juego1.java
 		configurarVentana();
 		crearTitulo();
 		crearBotones();
