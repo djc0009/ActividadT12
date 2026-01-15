@@ -28,7 +28,7 @@ public class Blackjack1 extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			}plokvgcfhp
 		});
 	}
 
