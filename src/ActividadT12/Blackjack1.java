@@ -5,10 +5,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
+import java.awt.Color;
 
-public class UNO extends JFrame {
+public class Blackjack1 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -20,7 +22,7 @@ public class UNO extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UNO frame = new UNO();
+					Blackjack1 frame = new Blackjack1();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,26 +34,21 @@ public class UNO extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UNO() {
+	public Blackjack1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+		contentPane.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
 		
-		
-		JLabel lblNewLabel = new JLabel("New label");
-		contentPane.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		contentPane.add(lblNewLabel_1);
-		
-		JButton btnNewButton = new JButton("New button");
-		contentPane.add(btnNewButton);
+		JLabel lblNewLabel = new JLabel("BLACKJACK\r\n");
+		lblNewLabel.setBackground(Color.BLACK);
+		panel.add(lblNewLabel, BorderLayout.NORTH);
 
 	}
-
 }

@@ -75,7 +75,7 @@ public class PnatallaInicio extends JFrame {
         titlePanel.setOpaque(false);
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
 
-        titulo = new JLabel("UNO");
+        titulo = new JLabel("TRES x MESSI");
         titulo.setFont(new Font("Impact", Font.BOLD, 96));
         titulo.setForeground(Color.WHITE);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
