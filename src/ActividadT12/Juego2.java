@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 public class Juego2 extends JFrame {
 
@@ -44,14 +45,19 @@ public class Juego2 extends JFrame {
         crearPanelCartas();
         crearPanelSur();
         crearBotonesCartas();
-        pack();
+
+        // Tamaño fijo y centrado
+        setSize(1000, 700);
         setLocationRelativeTo(null);
+
+        // Redimensionar cartas después de que la ventana sea visible
+        EventQueue.invokeLater(() -> redimensionarCartas());
     }
 
     private void configurarVentana() {
         setTitle("Memory Davante - Modo Fácil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(900, 650));
+        setMinimumSize(new Dimension(1000, 700));
 
         contentPane = new JPanel(new BorderLayout(15, 15));
         contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -110,14 +116,18 @@ public class Juego2 extends JFrame {
         JButton btnModoDificil = crearBotonInferior("Modo Difícil", new Color(60, 140, 255));
         btnModoDificil.addActionListener(e -> {
             dispose();
-            new Juego2_2().setVisible(true); 
+            new Juego2_2().setVisible(true); // Tu modo difícil
         });
 
         JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
         btnReiniciar.addActionListener(e -> reiniciarJuego());
 
         JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
-        btnSalir.addActionListener(e -> dispose());
+        btnSalir.addActionListener(e -> {
+        	dispose();
+            new PnatallaInicio().setVisible(true);
+        });
+        
 
         panelSur.add(btnModoDificil);
         panelSur.add(btnReiniciar);
@@ -134,6 +144,9 @@ public class Juego2 extends JFrame {
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // ⚡ Esto fuerza que el LookAndFeel no cambie el color
+        btn.setUI(new BasicButtonUI());
 
         btn.addMouseListener(new MouseAdapter() {
             @Override
@@ -163,6 +176,9 @@ public class Juego2 extends JFrame {
 
             boton.setIcon(escalarImagen("src/images/reverso.png", 120, 120));
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            // Evita que el LookAndFeel cambie el botón
+            boton.setUI(new BasicButtonUI());
 
             boton.addMouseListener(new MouseAdapter() {
                 @Override

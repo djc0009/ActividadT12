@@ -25,7 +25,6 @@ public class PnatallaInicio extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        // Cargar directamente la pantalla de juegos
         setContentPane(crearPantallaJuegos());
     }
 
@@ -55,6 +54,7 @@ public class PnatallaInicio extends JFrame {
 
         // Blackjack
         JPanel blackjackCard = crearCartaJuego(
+                "BLACKJACK",
                 "♠ BLACKJACK ♥",
                 "El clásico 21",
                 "Vence a la banca sin pasarte de 21 puntos",
@@ -64,6 +64,7 @@ public class PnatallaInicio extends JFrame {
 
         // Memory
         JPanel memoryCard = crearCartaJuego(
+                "MEMORY",
                 "🧠 MEMORY",
                 "Pon a prueba tu memoria",
                 "Encuentra todas las parejas de cartas",
@@ -73,6 +74,7 @@ public class PnatallaInicio extends JFrame {
 
         // Mayor o Menor
         JPanel higherCard = crearCartaJuego(
+                "HIGHER",
                 "📊 MAYOR o MENOR",
                 "Adivina la siguiente",
                 "¿La próxima carta será mayor o menor?",
@@ -98,7 +100,14 @@ public class PnatallaInicio extends JFrame {
     }
 
     // ================= MÉTODOS AUXILIARES =================
-    private JPanel crearCartaJuego(String titulo, String subtitulo, String descripcion, Color color, String emoji) {
+    private JPanel crearCartaJuego(
+            String tipoJuego,
+            String titulo,
+            String subtitulo,
+            String descripcion,
+            Color color,
+            String emoji
+    ) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(color);
@@ -141,10 +150,27 @@ public class PnatallaInicio extends JFrame {
         btnJugar.setMaximumSize(new Dimension(200, 50));
         btnJugar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnJugar.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Próximamente: " + titulo + "\n(Integración pendiente)",
-                "Juego en desarrollo",
-                JOptionPane.INFORMATION_MESSAGE));
+        // ================= Acción JUGAR según el juego =================
+        btnJugar.addActionListener(e -> {
+            dispose(); // cerrar menú
+
+            switch (tipoJuego) {
+                case "MEMORY":
+                    EventQueue.invokeLater(() -> new Juego2().setVisible(true));
+                    break;
+                case "BLACKJACK":
+                    EventQueue.invokeLater(() -> new Blackjack().setVisible(true));
+                    break;
+                case "HIGHER":
+                    EventQueue.invokeLater(() -> new HigherOrLower().setVisible(true));
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this,
+                            "Juego en desarrollo: " + titulo,
+                            "Atención",
+                            JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
 
         card.add(lblEmoji);
         card.add(Box.createVerticalStrut(15));
@@ -161,6 +187,7 @@ public class PnatallaInicio extends JFrame {
                 card.setBackground(color.brighter());
                 txtDescripcion.setBackground(color.brighter());
             }
+
             public void mouseExited(MouseEvent e) {
                 card.setBackground(color);
                 txtDescripcion.setBackground(color);
@@ -184,6 +211,7 @@ public class PnatallaInicio extends JFrame {
             public void mouseEntered(MouseEvent e) {
                 btn.setBackground(new Color(100, 100, 120));
             }
+
             public void mouseExited(MouseEvent e) {
                 btn.setBackground(new Color(70, 70, 90));
             }
