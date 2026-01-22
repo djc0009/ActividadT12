@@ -49,16 +49,14 @@ public class Juego2_2 extends JFrame {
         crearPanelSur();
         crearBotonesCartas();
 
-        // Tamaño fijo y centrado (igual que Juego2)
         setSize(1000, 700);
         setLocationRelativeTo(null);
 
-        // Redimensionar cartas después de que la ventana sea visible
-        EventQueue.invokeLater(() -> redimensionarCartas());
+        EventQueue.invokeLater(this::redimensionarCartas);
     }
 
     private void configurarVentana() {
-        setTitle("Memory Davante - Modo Difícil");
+        setTitle("Memory Davante - Modo Bonito");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(1000, 700));
 
@@ -69,7 +67,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void cargarRecursos() {
-        reverso = new ImageIcon("src/images/reverso.png");
+        reverso = escalarImagen("src/images/reverso.png", 120, 120);
     }
 
     private void prepararCartas() {
@@ -120,23 +118,20 @@ public class Juego2_2 extends JFrame {
         panelSur.setBackground(new Color(25, 25, 25));
 
         JButton btnModoFacil = crearBotonInferior("Modo Fácil", new Color(60, 140, 255));
-        btnModoFacil.addActionListener(e -> {
+        btnModoFacil.addActionListener(e -> new Juego2().setVisible(true));
+
+        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
+        btnSalir.addActionListener(e -> {
             dispose();
-            new Juego2().setVisible(true);
+            new PantallaInicio().setVisible(true);
         });
 
         JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
         btnReiniciar.addActionListener(e -> reiniciarJuego());
 
-        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
-        btnSalir.addActionListener(e -> {
-        	dispose();
-            new PnatallaInicio().setVisible(true);
-        });
-
         panelSur.add(btnModoFacil);
-        panelSur.add(btnReiniciar);
         panelSur.add(btnSalir);
+        panelSur.add(btnReiniciar);
 
         contentPane.add(panelSur, BorderLayout.SOUTH);
     }
@@ -149,7 +144,6 @@ public class Juego2_2 extends JFrame {
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.setUI(new BasicButtonUI());
 
         btn.addMouseListener(new MouseAdapter() {
@@ -170,17 +164,16 @@ public class Juego2_2 extends JFrame {
         panelCartas.removeAll();
         botones.clear();
 
-        for (int i = 0; i < cartas.size(); i++) {
+        for (String carta : cartas) {
             JButton boton = new JButton();
             boton.setFocusPainted(false);
             boton.setBackground(new Color(45, 45, 45));
             boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
-            boton.putClientProperty("imagen", cartas.get(i));
+            boton.putClientProperty("imagen", carta);
             boton.putClientProperty("descubierta", false);
 
-            boton.setIcon(escalarImagen("src/images/reverso.png", 120, 120));
+            boton.setIcon(reverso);
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
             boton.setUI(new BasicButtonUI());
 
             boton.addMouseListener(new MouseAdapter() {
@@ -227,7 +220,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void ocultarImagen(JButton boton) {
-        boton.setIcon(escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight()));
+        boton.setIcon(reverso);
     }
 
     private void comprobarPareja() {
@@ -285,22 +278,21 @@ public class Juego2_2 extends JFrame {
         crearBotonesCartas();
     }
 
-    // ⭐ MÉTODO MEJORADO PARA QUE LAS IMÁGENES SE VEAN PERFECTAS ⭐
     private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
         try {
             Image imgOriginal = ImageIO.read(new File(ruta));
 
-            int anchoFinal = Math.max(ancho - 10, 10);
-            int altoFinal = Math.max(alto - 10, 10);
+            int w = Math.max(ancho - 10, 10);
+            int h = Math.max(alto - 10, 10);
 
-            BufferedImage buffered = new BufferedImage(anchoFinal, altoFinal, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage buffered = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = buffered.createGraphics();
 
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2.drawImage(imgOriginal, 0, 0, anchoFinal, altoFinal, null);
+            g2.drawImage(imgOriginal, 0, 0, w, h, null);
             g2.dispose();
 
             return new ImageIcon(buffered);
@@ -312,14 +304,12 @@ public class Juego2_2 extends JFrame {
 
     private void redimensionarCartas() {
         for (JButton boton : botones) {
-            int w = boton.getWidth();
-            int h = boton.getHeight();
+            String img = (String) boton.getClientProperty("imagen");
 
             if ((boolean) boton.getClientProperty("descubierta")) {
-                String img = (String) boton.getClientProperty("imagen");
-                boton.setIcon(escalarImagen("src/images/" + img, w, h));
+                boton.setIcon(escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight()));
             } else {
-                boton.setIcon(escalarImagen("src/images/reverso.png", w, h));
+                boton.setIcon(escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight()));
             }
         }
     }
