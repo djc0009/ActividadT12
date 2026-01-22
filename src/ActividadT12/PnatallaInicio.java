@@ -61,6 +61,7 @@ public class PnatallaInicio extends JFrame {
                 new Color(139, 0, 0),
                 "🃏"
         );
+        
 
         // Memory
         JPanel memoryCard = crearCartaJuego(

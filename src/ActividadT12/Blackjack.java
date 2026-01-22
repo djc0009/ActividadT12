@@ -54,6 +54,7 @@ public class Blackjack extends JFrame {
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		JLabel lblNewLabel = new JLabel("BLACKJACK\r\n");
+		
 		lblNewLabel.setForeground(Color.YELLOW);
 		lblNewLabel.setBackground(Color.BLACK);
 		lblNewLabel.setFont(new Font("Century Schoolbook", Font.BOLD, 70));
