@@ -49,7 +49,7 @@ public class Juego2 extends JFrame {
     }
 
     private void configurarVentana() {
-        setTitle("Memory Davante - Modo Bonito");
+        setTitle("Memory Davante - Modo Fácil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(900, 650));
 
@@ -60,7 +60,7 @@ public class Juego2 extends JFrame {
     }
 
     private void cargarRecursos() {
-        reverso = escalarImagen("src/images/reverso.png", 120, 120);
+        reverso = new ImageIcon("src/images/reverso.png");
     }
 
     private void prepararCartas() {
@@ -68,7 +68,7 @@ public class Juego2 extends JFrame {
         botones = new ArrayList<>();
 
         String[] imagenes = {
-            "elefante.png", "hippo.png", "mono.png", "oso.png","panda.png"
+            "elefante.png", "hippo.png", "mono.png", "oso.png", "panda.png"
         };
 
         for (String img : imagenes) {
@@ -104,28 +104,24 @@ public class Juego2 extends JFrame {
 
     private void crearPanelSur() {
         panelSur = new JPanel();
-        panelSur.setLayout(new GridLayout(1, 2, 20, 0));
+        panelSur.setLayout(new GridLayout(1, 3, 20, 0));
         panelSur.setBackground(new Color(25, 25, 25));
 
-        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
-        btnSalir.addActionListener(e -> dispose());
-
-        JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
-        btnReiniciar.addActionListener(e -> reiniciarJuego());
-        
-        JButton btnModoFacil = crearBotonInferior("Modo Dificil", new Color(60, 140, 255));
-
-        btnModoFacil.addActionListener(e -> {
+        JButton btnModoDificil = crearBotonInferior("Modo Difícil", new Color(60, 140, 255));
+        btnModoDificil.addActionListener(e -> {
             dispose();
             new Juego2_2().setVisible(true); 
         });
 
-        panelSur.add(btnModoFacil);
+        JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
+        btnReiniciar.addActionListener(e -> reiniciarJuego());
 
+        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
+        btnSalir.addActionListener(e -> dispose());
 
-        panelSur.add(btnModoFacil);
-        panelSur.add(btnSalir);
+        panelSur.add(btnModoDificil);
         panelSur.add(btnReiniciar);
+        panelSur.add(btnSalir);
 
         contentPane.add(panelSur, BorderLayout.SOUTH);
     }
@@ -165,10 +161,9 @@ public class Juego2 extends JFrame {
             boton.putClientProperty("imagen", cartas.get(i));
             boton.putClientProperty("descubierta", false);
 
-            boton.setIcon(reverso);
+            boton.setIcon(escalarImagen("src/images/reverso.png", 120, 120));
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            // Hover effect
             boton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
@@ -214,7 +209,8 @@ public class Juego2 extends JFrame {
     }
 
     private void ocultarImagen(JButton boton) {
-        boton.setIcon(reverso);
+        ImageIcon reversoEscalado = escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight());
+        boton.setIcon(reversoEscalado);
     }
 
     private void comprobarPareja() {
@@ -278,9 +274,13 @@ public class Juego2 extends JFrame {
             alto = 120;
         }
 
-        ImageIcon icon = new ImageIcon(ruta);
-        Image img = icon.getImage().getScaledInstance(ancho - 15, alto - 15, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
+        try {
+            ImageIcon icon = new ImageIcon(ruta);
+            Image img = icon.getImage().getScaledInstance(ancho - 10, alto - 10, Image.SCALE_SMOOTH);
+            return new ImageIcon(img);
+        } catch (Exception e) {
+            return new ImageIcon();
+        }
     }
 
     private void redimensionarCartas() {

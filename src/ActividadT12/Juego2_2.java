@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-
-
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -54,7 +52,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void configurarVentana() {
-        setTitle("Memory Davante - Modo Bonito");
+        setTitle("Memory Davante - Modo Difícil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(900, 650));
 
@@ -65,7 +63,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void cargarRecursos() {
-        reverso = escalarImagen("src/images/reverso.png", 200, 200);
+        reverso = new ImageIcon("src/images/reverso.png");
     }
 
     private void prepararCartas() {
@@ -115,17 +113,17 @@ public class Juego2_2 extends JFrame {
         panelSur.setLayout(new GridLayout(1, 3, 20, 0));
         panelSur.setBackground(new Color(25, 25, 25));
 
-        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
-        btnSalir.addActionListener(e -> dispose());
-
-        JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
-        btnReiniciar.addActionListener(e -> reiniciarJuego());
-
         JButton btnModoFacil = crearBotonInferior("Modo Fácil", new Color(60, 140, 255));
         btnModoFacil.addActionListener(e -> {
             dispose();
             new Juego2().setVisible(true);
         });
+
+        JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
+        btnReiniciar.addActionListener(e -> reiniciarJuego());
+
+        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
+        btnSalir.addActionListener(e -> dispose());
 
         panelSur.add(btnModoFacil);
         panelSur.add(btnReiniciar);
@@ -169,7 +167,7 @@ public class Juego2_2 extends JFrame {
             boton.putClientProperty("imagen", carta);
             boton.putClientProperty("descubierta", false);
 
-            boton.setIcon(reverso);
+            boton.setIcon(escalarImagen("src/images/reverso.png", 100, 100));
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
             boton.addMouseListener(new MouseAdapter() {
@@ -216,7 +214,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void ocultarImagen(JButton boton) {
-        boton.setIcon(reverso);
+        boton.setIcon(obtenerImagenEscalada("reverso.png", boton.getWidth(), boton.getHeight()));
     }
 
     private void comprobarPareja() {
@@ -270,6 +268,7 @@ public class Juego2_2 extends JFrame {
         primeraCarta = null;
         segundaCarta = null;
         bloqueo = false;
+        cacheImagenes.clear();
         prepararCartas();
         crearBotonesCartas();
     }
@@ -287,18 +286,26 @@ public class Juego2_2 extends JFrame {
     }
 
     private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
+        if (ancho <= 0 || alto <= 0) {
+            ancho = 100;
+            alto = 100;
+        }
+
         try {
             ImageIcon icon = new ImageIcon(ruta);
             Image img = icon.getImage();
 
-            BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+            int anchoFinal = Math.max(ancho - 10, 10);
+            int altoFinal = Math.max(alto - 10, 10);
+
+            BufferedImage buffered = new BufferedImage(anchoFinal, altoFinal, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = buffered.createGraphics();
 
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            g2.drawImage(img, 0, 0, ancho, alto, null);
+            g2.drawImage(img, 0, 0, anchoFinal, altoFinal, null);
             g2.dispose();
 
             return new ImageIcon(buffered);
@@ -317,7 +324,7 @@ public class Juego2_2 extends JFrame {
                 String img = (String) boton.getClientProperty("imagen");
                 boton.setIcon(obtenerImagenEscalada(img, w, h));
             } else {
-                boton.setIcon(escalarImagen("src/images/reverso.png", w, h));
+                boton.setIcon(obtenerImagenEscalada("reverso.png", w, h));
             }
         }
     }
