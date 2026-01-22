@@ -8,8 +8,6 @@ import javax.swing.border.*;
 public class PnatallaInicio extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private JPanel mainPanel;
-    private CardLayout cardLayout;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -27,13 +25,8 @@ public class PnatallaInicio extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
-
-        // Cargar directamente la pantalla de juegos como principal
-        mainPanel.add(crearPantallaJuegos(), "JUEGOS");
-
-        setContentPane(mainPanel);
+        // Cargar directamente la pantalla de juegos
+        setContentPane(crearPantallaJuegos());
     }
 
     // ================= PANTALLA DE JUEGOS =================
