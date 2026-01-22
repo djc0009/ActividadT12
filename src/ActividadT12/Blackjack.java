@@ -1,244 +1,190 @@
 package ActividadT12;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Blackjack extends JFrame {
 
-    // ===== MODELOS =====
-    static class Carta {
-        String palo, valor;
-        int puntos;
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
 
-        public Carta(String palo, String valor, int puntos) {
-            this.palo = palo;
-            this.valor = valor;
-            this.puntos = puntos;
-        }
-    }
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Blackjack frame = new Blackjack();
+					frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-    static class Baraja {
-        private Stack<Carta> cartas = new Stack<>();
+	/**
+	 * Create the frame.
+	 */
+	public Blackjack() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.BLACK);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.BLACK);
+		contentPane.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		JLabel lblNewLabel = new JLabel("BLACKJACK\r\n");
+		lblNewLabel.setForeground(Color.YELLOW);
+		lblNewLabel.setBackground(Color.BLACK);
+		lblNewLabel.setFont(new Font("Century Schoolbook", Font.BOLD, 70));
+		lblNewLabel.setHorizontalAlignment(JLabel.CENTER);
+		lblNewLabel.setPreferredSize(new Dimension(400, 80));
+		panel.add(lblNewLabel, BorderLayout.NORTH);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.BLACK);
+		panel.add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new GridLayout(3, 0, 0, 0));
+		
+		JPanel panelCartasBanca = new JPanel();
+		panelCartasBanca.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
+		panelCartasBanca.setBackground(Color.BLACK);
+		panel_1.add(panelCartasBanca);
+		
+		JPanel panelTusCartas = new JPanel();
+		panelTusCartas.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
+		panelTusCartas.setBackground(Color.BLACK);
+		panel_1.add(panelTusCartas);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(BorderFactory.createEmptyBorder(200, 0, 0, 0));
+		panel_2.setBackground(Color.BLACK);
+		panel_1.add(panel_2);
+		
+		JButton btnNewButton = new JButton("PEDIR");
+		btnNewButton.setBackground(Color.LIGHT_GRAY);
+		btnNewButton.setFont(new Font("Verdana", Font.BOLD, 30));
+		btnNewButton.addActionListener(e -> {
+		    int carta = (int)(Math.random() * 10) + 1; // carta aleatoria 1-10
+		    puntosJugador += carta;
 
-        public Baraja() {
-            String[] palos = {"♥", "♦", "♠", "♣"};
-            String[] valores = {"2","3","4","5","6","7","8","9","10","J","Q","K","A"};
-            for (String palo : palos) {
-                for (String valor : valores) {
-                    int puntos;
-                    if (valor.equals("A")) puntos = 11;
-                    else if (valor.equals("J") || valor.equals("Q") || valor.equals("K")) puntos = 10;
-                    else puntos = Integer.parseInt(valor);
-                    cartas.add(new Carta(palo, valor, puntos));
-                }
-            }
-            Collections.shuffle(cartas);
-        }
+		    panelTusCartas.add(crearCarta(carta));
+		    panelTusCartas.revalidate();
+		    panelTusCartas.repaint();
 
-        public Carta robar() { return cartas.pop(); }
-    }
+		    if (puntosJugador > 21) {
+		        JOptionPane.showMessageDialog(this, "PIERDES Te has pasado con " + puntosJugador + " puntos");
+		        
+		    }
+		});
 
-    static class Jugador {
-        ArrayList<Carta> mano = new ArrayList<>();
+		btnNewButton.setPreferredSize(new Dimension(400, 80));
+		panel_2.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("PLANTARSE");
+		btnNewButton_1.setBackground(Color.LIGHT_GRAY);
+		btnNewButton_1.setFont(new Font("Verdana", Font.BOLD, 30));
+		btnNewButton_1.addActionListener(e -> {
+		    // La banca juega sola
+		    while (puntosBanca < 17) {
+		        int cartaBanca = (int) (Math.random() * 10) + 1;
+		        puntosBanca += cartaBanca;
 
-        public void recibirCarta(Carta c) { mano.add(c); }
+		        // Crea un JLabel NUEVO cada vez dentro del bucle
+		        JLabel nuevaCarta = new JLabel(String.valueOf(cartaBanca), JLabel.CENTER);
+		        nuevaCarta.setForeground(Color.RED);
+		        nuevaCarta.setPreferredSize(new Dimension(150, 190));
+		        nuevaCarta.setFont(new Font("Arial", Font.BOLD, 50));
+		        nuevaCarta.setOpaque(true);
+		        nuevaCarta.setBackground(Color.WHITE);
+		        nuevaCarta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 
-        public int getPuntaje() {
-            int total = 0, ases = 0;
-            for (Carta c : mano) {
-                total += c.puntos;
-                if (c.valor.equals("A")) ases++;
-            }
-            while (total > 21 && ases > 0) { total -= 10; ases--; }
-            return total;
-        }
+		        panelCartasBanca.add(nuevaCarta);
+		        panelCartasBanca.revalidate();
+		        panelCartasBanca.repaint();
+		    }
 
-        public void limpiar() { mano.clear(); }
-    }
+		    // Comparar resultados
+		    String mensaje;
+		    if (puntosBanca > 21) {
+		        mensaje = "GANAS La banca se paso (" + puntosBanca + ") ";
+		    } else if (puntosJugador > puntosBanca) {
+		        mensaje = "GANAS Jugador: " + puntosJugador + ", Banca: " + puntosBanca;
+		    } else if (puntosJugador == puntosBanca) {
+		        mensaje = "Empate. Jugador: " + puntosJugador + ", Banca: " + puntosBanca;
+		    } else {
+		        mensaje = "PIERDES. Jugador: " + puntosJugador + ", Banca: " + puntosBanca;
+		    }
 
-    // ===== VARIABLES =====
-    private Baraja baraja;
-    private Jugador jugador, dealer;
-    private int dinero = 1000, apuesta = 100;
+		    JOptionPane.showMessageDialog(this, mensaje);
+		    
+		});
 
-    private JPanel panelJugador, panelDealer;
-    private JLabel lblDinero, lblEstado, lblPuntajeJugador, lblPuntajeDealer;
-    private JButton btnPedir, btnPlantarse, btnNueva;
 
-    // ===== CONSTRUCTOR =====
-    public Blackjack() {
-        setTitle("🎴 Blackjack Visual 🎴");
-        setExtendedState(JFrame.MAXIMIZED_BOTH); // pantalla completa
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().setBackground(new Color(34,139,34));
-        setLayout(new BorderLayout(20,20));
+		btnNewButton_1.setPreferredSize(new Dimension(400, 80));
+		panel_2.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("INICIAR");
+		btnNewButton_2.setBackground(Color.LIGHT_GRAY);
+		btnNewButton_2.setFont(new Font("Verdana", Font.BOLD, 30));
+		btnNewButton_2.addActionListener(e -> {
+		    panelTusCartas.removeAll();
+		    panelCartasBanca.removeAll();
+		    panelTusCartas.repaint();
+		    panelCartasBanca.repaint();
 
-        jugador = new Jugador();
-        dealer = new Jugador();
+		    puntosJugador = 0;
+		    puntosBanca = 0;
 
-        // PANEL SUPERIOR: dinero y estado
-        JPanel panelInfo = new JPanel();
-        panelInfo.setBackground(new Color(0,100,0));
-        lblDinero = new JLabel("💰 Dinero: $" + dinero);
-        lblDinero.setForeground(Color.WHITE);
-        lblDinero.setFont(new Font("Arial",Font.BOLD,50));
+		    btnNewButton.setEnabled(true);
+		    btnNewButton_1.setEnabled(true);
+		});
 
-        lblEstado = new JLabel("Haz tu jugada");
-        lblEstado.setForeground(Color.YELLOW);
-        lblEstado.setFont(new Font("Arial",Font.BOLD,50));
+		btnNewButton_2.setPreferredSize(new Dimension(400, 80));
+		panel_2.add(btnNewButton_2);
 
-        panelInfo.add(lblDinero);
-        panelInfo.add(Box.createHorizontalStrut(50));
-        panelInfo.add(lblEstado);
+		
+		
+		
+	}
 
-        add(panelInfo,BorderLayout.NORTH);
+	private int puntosJugador = 0;
+	private int puntosBanca = 0;
 
-        // PANEL CENTRAL: cartas
-        JPanel panelCentro = new JPanel();
-        panelCentro.setLayout(new GridLayout(2,1,10,50));
-        panelCentro.setBackground(new Color(34,139,34));
-        panelCentro.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+	private JLabel crearCarta(int valor) {
+	    JLabel carta = new JLabel(String.valueOf(valor), JLabel.CENTER);
+	    carta.setForeground(Color.GREEN);
+	    carta.setPreferredSize(new Dimension(150, 190)); // tamaño de la carta
+	    carta.setFont(new Font("Arial", Font.BOLD, 50));
+	    carta.setOpaque(true);
+	    carta.setBackground(Color.WHITE);
+	    carta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+	    return carta;
+	}
+	
 
-        // PANEL DEALER
-        panelDealer = new JPanel();
-        panelDealer.setOpaque(false);
-        panelDealer.setLayout(new FlowLayout(FlowLayout.CENTER,20,20));
-        lblPuntajeDealer = new JLabel("Puntos: 0");
-        lblPuntajeDealer.setFont(new Font("Arial",Font.BOLD,40));
-        lblPuntajeDealer.setForeground(Color.WHITE);
-        panelDealer.add(lblPuntajeDealer);
-
-        // PANEL JUGADOR
-        panelJugador = new JPanel();
-        panelJugador.setOpaque(false);
-        panelJugador.setLayout(new FlowLayout(FlowLayout.CENTER,20,20));
-        lblPuntajeJugador = new JLabel("Puntos: 0");
-        lblPuntajeJugador.setFont(new Font("Arial",Font.BOLD,40));
-        lblPuntajeJugador.setForeground(Color.WHITE);
-        panelJugador.add(lblPuntajeJugador);
-
-        panelCentro.add(panelDealer);
-        panelCentro.add(panelJugador);
-
-        add(panelCentro,BorderLayout.CENTER);
-
-        // BOTONES
-        JPanel panelBotones = new JPanel();
-        panelBotones.setBackground(new Color(0,100,0));
-        btnPedir = new JButton("Pedir carta");
-        btnPlantarse = new JButton("Plantarse");
-        btnNueva = new JButton("Nueva ronda");
-        styleButton(btnPedir);
-        styleButton(btnPlantarse);
-        styleButton(btnNueva);
-        panelBotones.add(btnPedir);
-        panelBotones.add(Box.createHorizontalStrut(50));
-        panelBotones.add(btnPlantarse);
-        panelBotones.add(Box.createHorizontalStrut(50));
-        panelBotones.add(btnNueva);
-        add(panelBotones,BorderLayout.SOUTH);
-
-        iniciarRonda();
-        acciones();
-
-        setVisible(true);
-    }
-
-    private void styleButton(JButton b){
-        b.setFont(new Font("Arial",Font.BOLD,40));
-        b.setBackground(Color.ORANGE);
-        b.setForeground(Color.BLACK);
-        b.setFocusPainted(false);
-        b.setBorder(BorderFactory.createLineBorder(Color.BLACK,4));
-    }
-
-    private JPanel crearCarta(Carta c){
-        JPanel carta = new JPanel();
-        carta.setPreferredSize(new Dimension(150,220));
-        carta.setBackground(Color.WHITE);
-        carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,3));
-        carta.setLayout(new BorderLayout());
-
-        JLabel lblValor = new JLabel(c.valor, SwingConstants.CENTER);
-        lblValor.setFont(new Font("Arial",Font.BOLD,50));
-        lblValor.setForeground(c.palo.equals("♥")||c.palo.equals("♦")?Color.RED:Color.BLACK);
-
-        JLabel lblPalo = new JLabel(c.palo, SwingConstants.CENTER);
-        lblPalo.setFont(new Font("Arial",Font.BOLD,80));
-        lblPalo.setForeground(c.palo.equals("♥")||c.palo.equals("♦")?Color.RED:Color.BLACK);
-
-        carta.add(lblValor,BorderLayout.NORTH);
-        carta.add(lblPalo,BorderLayout.CENTER);
-
-        return carta;
-    }
-
-    private void actualizarPantalla(){
-        panelJugador.removeAll();
-        panelDealer.removeAll();
-
-        panelDealer.add(lblPuntajeDealer);
-        for(Carta c: dealer.mano) panelDealer.add(crearCarta(c));
-
-        panelJugador.add(lblPuntajeJugador);
-        for(Carta c: jugador.mano) panelJugador.add(crearCarta(c));
-
-        // Actualizar puntajes
-        lblPuntajeJugador.setText("Puntos: " + jugador.getPuntaje());
-        lblPuntajeDealer.setText("Puntos: " + dealer.getPuntaje());
-
-        lblDinero.setText("💰 Dinero: $" + dinero);
-
-        panelJugador.revalidate();
-        panelJugador.repaint();
-        panelDealer.revalidate();
-        panelDealer.repaint();
-    }
-
-    private void iniciarRonda(){
-        baraja = new Baraja();
-        jugador.limpiar();
-        dealer.limpiar();
-
-        jugador.recibirCarta(baraja.robar());
-        jugador.recibirCarta(baraja.robar());
-        dealer.recibirCarta(baraja.robar());
-
-        lblEstado.setText("Tu turno");
-        actualizarPantalla();
-    }
-
-    private void turnoDealer(){
-        while(dealer.getPuntaje()<17) dealer.recibirCarta(baraja.robar());
-        decidirGanador();
-    }
-
-    private void decidirGanador(){
-        int pj = jugador.getPuntaje();
-        int pd = dealer.getPuntaje();
-        if(pj>21){ lblEstado.setText("😵 Te pasaste! Perdiste"); dinero-=apuesta; }
-        else if(pd>21||pj>pd){ lblEstado.setText("🎉 ¡Ganaste!"); dinero+=apuesta; }
-        else if(pj<pd){ lblEstado.setText("😢 Perdiste"); dinero-=apuesta; }
-        else lblEstado.setText("🤝 Empate");
-        actualizarPantalla();
-    }
-
-    private void acciones(){
-        btnPedir.addActionListener(e->{
-            jugador.recibirCarta(baraja.robar());
-            actualizarPantalla();
-            if(jugador.getPuntaje()>21){
-                lblEstado.setText("😵 Te pasaste!");
-                dinero-=apuesta;
-                actualizarPantalla();
-            }
-        });
-        btnPlantarse.addActionListener(e->turnoDealer());
-        btnNueva.addActionListener(e->iniciarRonda());
-    }
-
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(()->new Blackjack());
-    }
 }
