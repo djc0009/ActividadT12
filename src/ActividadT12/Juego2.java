@@ -1,32 +1,29 @@
 package ActividadT12;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JButton;
-import java.awt.GridLayout;
-import javax.swing.ImageIcon;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class Juego2 extends JFrame {
 
     private static final long serialVersionUID = 1L;
+
     private JPanel contentPane;
-    private int contador = 0;
+    private JPanel panelCartas;
+    private JPanel panelSur;
+
+    private int parejasEncontradas = 0;
     private JButton primeraCarta = null;
     private JButton segundaCarta = null;
     private boolean bloqueo = false;
 
     private ArrayList<String> cartas;
+    private ArrayList<JButton> botones;
+
+    private ImageIcon reverso;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -41,81 +38,165 @@ public class Juego2 extends JFrame {
 
     public Juego2() {
         configurarVentana();
-        crearTitulo();
+        cargarRecursos();
         prepararCartas();
-        crearBotones();
+        crearTitulo();
+        crearPanelCartas();
+        crearPanelSur();
+        crearBotonesCartas();
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void configurarVentana() {
+        setTitle("Memory Davante - Modo Bonito");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 600, 400);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
+        setMinimumSize(new Dimension(900, 650));
+
+        contentPane = new JPanel(new BorderLayout(15, 15));
+        contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
+        contentPane.setBackground(new Color(25, 25, 25));
         setContentPane(contentPane);
     }
 
-    private void crearTitulo() {
-        JLabel lblTitulo = new JLabel("Bienvenido a Memory Davante");
-        lblTitulo.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
-        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        contentPane.add(lblTitulo, BorderLayout.NORTH);
+    private void cargarRecursos() {
+        reverso = escalarImagen("src/images/reverso.png", 120, 120);
     }
 
     private void prepararCartas() {
         cartas = new ArrayList<>();
-        //Almacen de imagenes
-        String[] imagenes = {"hippo.png", "oso.png", "elefante.png", "panda.png", "mono.png"};
+        botones = new ArrayList<>();
+
+        String[] imagenes = {
+            "elefante.png", "hippo.png", "mono.png", "oso.png","panda.png"
+        };
 
         for (String img : imagenes) {
             cartas.add(img);
             cartas.add(img);
         }
-        //Barajar cartas
+
         Collections.shuffle(cartas);
     }
 
-    private void crearBotones() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 5, 5, 5));
-        contentPane.add(panel, BorderLayout.CENTER);
-        {
-        	JPanel panel_1 = new JPanel();
-        	contentPane.add(panel_1, BorderLayout.SOUTH);
-        	{
-        		JButton btnNewButton_1 = new JButton("Salir");
-        		btnNewButton_1.addActionListener(new ActionListener() {
-        			public void actionPerformed(ActionEvent e) {
-        				dispose();
-        			}
-        		});
-        		panel_1.add(btnNewButton_1);
-        	}
-        	{
-        		JButton btnNewButton = new JButton("Modo Dificil");
-        		btnNewButton.addActionListener(new ActionListener() {
-        			public void actionPerformed(ActionEvent e) {
-        				new Juego2_2().setVisible(true); 
-        				
-        				dispose();
-        				  
-        			}
-        		});
-        		panel_1.add(btnNewButton);
-        	}
-        }
-        //Bucle que crea 10 botones y le selecciona una imagen
-        for (int i = 0; i < 10; i++) {
-            JButton boton = new JButton("Carta");
+    private void crearTitulo() {
+        JLabel lblTitulo = new JLabel("Memory Davante");
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
+        lblTitulo.setForeground(new Color(255, 255, 0));
+        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTitulo.setBorder(new EmptyBorder(10, 0, 20, 0));
+        contentPane.add(lblTitulo, BorderLayout.NORTH);
+    }
+
+    private void crearPanelCartas() {
+        panelCartas = new JPanel();
+        panelCartas.setLayout(new GridLayout(2, 5, 12, 12));
+        panelCartas.setBackground(new Color(25, 25, 25));
+        contentPane.add(panelCartas, BorderLayout.CENTER);
+
+        panelCartas.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                redimensionarCartas();
+            }
+        });
+    }
+
+    private void crearPanelSur() {
+        panelSur = new JPanel();
+        panelSur.setLayout(new GridLayout(1, 2, 20, 0));
+        panelSur.setBackground(new Color(25, 25, 25));
+
+        JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
+        btnSalir.addActionListener(e -> dispose());
+
+        JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
+        btnReiniciar.addActionListener(e -> reiniciarJuego());
+        
+        JButton btnModoFacil = crearBotonInferior("Modo Dificil", new Color(60, 140, 255));
+
+        btnModoFacil.addActionListener(e -> {
+            dispose();
+            new Juego2_2().setVisible(true); 
+        });
+
+        panelSur.add(btnModoFacil);
+
+
+        panelSur.add(btnModoFacil);
+        panelSur.add(btnSalir);
+        panelSur.add(btnReiniciar);
+
+        contentPane.add(panelSur, BorderLayout.SOUTH);
+    }
+
+    private JButton crearBotonInferior(String texto, Color color) {
+        JButton btn = new JButton(texto);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(color);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btn.setBackground(color.darker());
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btn.setBackground(color);
+            }
+        });
+
+        return btn;
+    }
+
+    private void crearBotonesCartas() {
+        panelCartas.removeAll();
+        botones.clear();
+
+        for (int i = 0; i < cartas.size(); i++) {
+            JButton boton = new JButton();
+            boton.setFocusPainted(false);
+            boton.setBackground(new Color(45, 45, 45));
+            boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
             boton.putClientProperty("imagen", cartas.get(i));
-            panel.add(boton);
+            boton.putClientProperty("descubierta", false);
+
+            boton.setIcon(reverso);
+            boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            // Hover effect
+            boton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if (!(boolean) boton.getClientProperty("descubierta"))
+                        boton.setBorder(BorderFactory.createLineBorder(new Color(120, 120, 120), 3, true));
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if (!(boolean) boton.getClientProperty("descubierta"))
+                        boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
+                }
+            });
 
             boton.addActionListener(e -> manejarClick(boton));
+
+            botones.add(boton);
+            panelCartas.add(boton);
         }
+
+        panelCartas.revalidate();
+        panelCartas.repaint();
     }
 
     private void manejarClick(JButton boton) {
-        if (bloqueo) return; 
+        if (bloqueo) return;
+        if (boton == primeraCarta) return;
+        if ((boolean) boton.getClientProperty("descubierta")) return;
+
         mostrarImagen(boton);
 
         if (primeraCarta == null) {
@@ -127,14 +208,13 @@ public class Juego2 extends JFrame {
     }
 
     private void mostrarImagen(JButton boton) {
-        String ruta = "src/images/" + boton.getClientProperty("imagen");
-        boton.setIcon(new ImageIcon(ruta));
-        boton.setText("");
+        String img = (String) boton.getClientProperty("imagen");
+        ImageIcon icon = escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight());
+        boton.setIcon(icon);
     }
 
     private void ocultarImagen(JButton boton) {
-        boton.setIcon(null);
-        boton.setText("Carta");
+        boton.setIcon(reverso);
     }
 
     private void comprobarPareja() {
@@ -144,18 +224,27 @@ public class Juego2 extends JFrame {
         String img2 = (String) segundaCarta.getClientProperty("imagen");
 
         if (img1.equals(img2)) {
+            primeraCarta.putClientProperty("descubierta", true);
+            segundaCarta.putClientProperty("descubierta", true);
+
+            primeraCarta.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 100), 4, true));
+            segundaCarta.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 100), 4, true));
+
             primeraCarta = null;
             segundaCarta = null;
             bloqueo = false;
-            contador = contador + 1;
-            if (contador == 5) {
-            	mostrarMensajeFinal();
+
+            parejasEncontradas++;
+
+            if (parejasEncontradas == cartas.size() / 2) {
+                mostrarMensajeFinal();
             }
-            
         } else {
-            Timer timer = new Timer(1000, e -> {
+            Timer timer = new Timer(700, e -> {
                 ocultarImagen(primeraCarta);
                 ocultarImagen(segundaCarta);
+                primeraCarta.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
+                segundaCarta.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
                 primeraCarta = null;
                 segundaCarta = null;
                 bloqueo = false;
@@ -165,8 +254,43 @@ public class Juego2 extends JFrame {
         }
     }
 
-	private void mostrarMensajeFinal() {
-		javax.swing.JOptionPane.showMessageDialog( this, "¡Enhorabuena, has terminado el juego!", "Juego completado", javax.swing.JOptionPane.INFORMATION_MESSAGE );
-		
-	}
+    private void mostrarMensajeFinal() {
+        JOptionPane.showMessageDialog(
+            this,
+            "¡Enhorabuena, has terminado el juego!",
+            "Juego completado",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void reiniciarJuego() {
+        parejasEncontradas = 0;
+        primeraCarta = null;
+        segundaCarta = null;
+        bloqueo = false;
+        prepararCartas();
+        crearBotonesCartas();
+    }
+
+    private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
+        if (ancho <= 0 || alto <= 0) {
+            ancho = 120;
+            alto = 120;
+        }
+
+        ImageIcon icon = new ImageIcon(ruta);
+        Image img = icon.getImage().getScaledInstance(ancho - 15, alto - 15, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    private void redimensionarCartas() {
+        for (JButton boton : botones) {
+            if ((boolean) boton.getClientProperty("descubierta")) {
+                String img = (String) boton.getClientProperty("imagen");
+                boton.setIcon(escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight()));
+            } else {
+                boton.setIcon(escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight()));
+            }
+        }
+    }
 }
