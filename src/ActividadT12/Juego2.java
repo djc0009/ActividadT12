@@ -14,6 +14,8 @@ import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Juego2 extends JFrame {
 
@@ -81,11 +83,24 @@ public class Juego2 extends JFrame {
         	JPanel panel_1 = new JPanel();
         	contentPane.add(panel_1, BorderLayout.SOUTH);
         	{
-        		JButton btnNewButton_1 = new JButton("Volver");
+        		JButton btnNewButton_1 = new JButton("Salir");
+        		btnNewButton_1.addActionListener(new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				dispose();
+        			}
+        		});
         		panel_1.add(btnNewButton_1);
         	}
         	{
         		JButton btnNewButton = new JButton("Modo Dificil");
+        		btnNewButton.addActionListener(new ActionListener() {
+        			public void actionPerformed(ActionEvent e) {
+        				new Juego2_2().setVisible(true); 
+        				
+        				dispose();
+        				  
+        			}
+        		});
         		panel_1.add(btnNewButton);
         	}
         }
