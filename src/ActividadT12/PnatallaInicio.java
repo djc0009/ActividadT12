@@ -9,6 +9,7 @@ public class PnatallaInicio extends JFrame {
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
+        	
             new PnatallaInicio().setVisible(true);
         });
     }
@@ -19,7 +20,7 @@ public class PnatallaInicio extends JFrame {
 
         // ===== PANTALLA COMPLETA =====
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
+        setUndecorated(false);
         setLocationRelativeTo(null);
 
         // ===== PANEL PRINCIPAL =====
@@ -31,18 +32,19 @@ public class PnatallaInicio extends JFrame {
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(Color.DARK_GRAY);
 
-        JLabel titulo = new JLabel("TRES x MESSI");
-        titulo.setFont(new Font("Arial", Font.BOLD, 96));
+        JLabel titulo = new JLabel("TRES x UNO");
+        titulo.setFont(new Font("Constantia", Font.BOLD, 96));
         titulo.setForeground(Color.BLUE);
+
+        // Agregar espacio arriba
+        titulo.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0)); 
+        // arriba=50, izquierda=0, abajo=0, derecha=0
+
 
         titlePanel.add(titulo);
         mainPanel.add(titlePanel, BorderLayout.NORTH);
 
         // ===== BOTONES =====
-        JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 0, 10));
-        buttonPanel.setBackground(Color.DARK_GRAY);
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
-
         JButton btnJugar = crearBotonBasico("JUGAR");
         JButton btnInstrucciones = crearBotonBasico("INSTRUCCIONES");
         JButton btnOpciones = crearBotonBasico("OPCIONES");
@@ -52,13 +54,14 @@ public class PnatallaInicio extends JFrame {
         JPanel contenedor = new JPanel();
         contenedor.setBackground(Color.DARK_GRAY);
         contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
+
         contenedor.add(Box.createVerticalGlue()); // espacio arriba
         contenedor.add(btnJugar);
-        contenedor.add(Box.createVerticalStrut(10));
+        contenedor.add(Box.createVerticalStrut(20));
         contenedor.add(btnInstrucciones);
-        contenedor.add(Box.createVerticalStrut(10));
+        contenedor.add(Box.createVerticalStrut(20));
         contenedor.add(btnOpciones);
-        contenedor.add(Box.createVerticalStrut(10));
+        contenedor.add(Box.createVerticalStrut(20));
         contenedor.add(btnSalir);
         contenedor.add(Box.createVerticalGlue()); // espacio abajo
 
@@ -69,40 +72,19 @@ public class PnatallaInicio extends JFrame {
         btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         mainPanel.add(contenedor, BorderLayout.CENTER);
-
-        // ===== FOOTER =====
-        JLabel footer = new JLabel("© Actividad T12");
-        footer.setForeground(Color.WHITE);
-        footer.setHorizontalAlignment(SwingConstants.CENTER);
-        footer.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        mainPanel.add(footer, BorderLayout.SOUTH);
-
-        // ===== ACCIONES =====
-        btnJugar.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "¡Vamos a jugar!")
-        );
-
-        btnInstrucciones.addActionListener(e ->
-                JOptionPane.showMessageDialog(this,
-                        "Instrucciones:\n- Cada jugador roba cartas\n- Gana quien se quede sin cartas")
-        );
-
-        btnOpciones.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Opciones no disponibles")
-        );
-
-        btnSalir.addActionListener(e -> System.exit(0));
     }
 
-    // ===== BOTÓN BÁSICO (ESTRECHO) =====
+    // ===== BOTÓN BÁSICO (MÁS ANCHO Y MENOS ALTO) =====
     private JButton crearBotonBasico(String texto) {
         JButton boton = new JButton(texto);
         boton.setBackground(Color.YELLOW);
         boton.setForeground(Color.BLACK);
-        boton.setFont(new Font("Arial", Font.BOLD, 14));
+        boton.setFont(new Font("Arial", Font.BOLD, 24)); // fuente más grande
         boton.setFocusPainted(false);
-        boton.setMaximumSize(new Dimension(120, 35)); // menos ancho
-        boton.setPreferredSize(new Dimension(120, 35));
+
+        // Ajustamos tamaño: MÁS ANCHO, MENOS ALTO
+        boton.setMaximumSize(new Dimension(600, 80)); // ancho máximo grande, altura reducida
+        boton.setPreferredSize(new Dimension(600, 80));
         return boton;
     }
 }
