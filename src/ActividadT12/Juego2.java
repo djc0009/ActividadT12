@@ -2,11 +2,14 @@ package ActividadT12;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 public class Juego2 extends JFrame {
 
@@ -44,20 +47,25 @@ public class Juego2 extends JFrame {
         crearTitulo();
         crearPanelCartas();
         crearPanelSur();
+
+        // 🔹 Abrir en pantalla completa
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        // setUndecorated(true);
+
         crearBotonesCartas();
 
-        // Tamaño fijo y centrado
-        setSize(1000, 700);
-        setLocationRelativeTo(null);
-
-        // Redimensionar cartas después de que la ventana sea visible
-        EventQueue.invokeLater(() -> redimensionarCartas());
+        // Redimensionar cartas después de que la ventana esté visible
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                SwingUtilities.invokeLater(() -> redimensionarCartas());
+            }
+        });
     }
 
     private void configurarVentana() {
         setTitle("Memory Davante - Modo Fácil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(1000, 700));
 
         contentPane = new JPanel(new BorderLayout(15, 15));
         contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -66,7 +74,12 @@ public class Juego2 extends JFrame {
     }
 
     private void cargarRecursos() {
-        reverso = new ImageIcon("src/images/reverso.png");
+        try {
+            reverso = new ImageIcon(getClass().getResource("/images/reverso.png"));
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar reverso.png, usando icono vacío");
+            reverso = new ImageIcon();
+        }
     }
 
     private void prepararCartas() {
@@ -103,7 +116,7 @@ public class Juego2 extends JFrame {
         panelCartas.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                redimensionarCartas();
+                SwingUtilities.invokeLater(() -> redimensionarCartas());
             }
         });
     }
@@ -124,10 +137,9 @@ public class Juego2 extends JFrame {
 
         JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
         btnSalir.addActionListener(e -> {
-        	dispose();
+            dispose();
             new PnatallaInicio().setVisible(true);
         });
-        
 
         panelSur.add(btnModoDificil);
         panelSur.add(btnReiniciar);
@@ -144,8 +156,6 @@ public class Juego2 extends JFrame {
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-
         btn.setUI(new BasicButtonUI());
 
         btn.addMouseListener(new MouseAdapter() {
@@ -166,18 +176,15 @@ public class Juego2 extends JFrame {
         panelCartas.removeAll();
         botones.clear();
 
-        for (int i = 0; i < cartas.size(); i++) {
+        for (String carta : cartas) {
             JButton boton = new JButton();
             boton.setFocusPainted(false);
             boton.setBackground(new Color(45, 45, 45));
             boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
-            boton.putClientProperty("imagen", cartas.get(i));
+            boton.putClientProperty("imagen", carta);
             boton.putClientProperty("descubierta", false);
-
-            boton.setIcon(escalarImagen("src/images/reverso.png", 120, 120));
+            boton.setIcon(reverso);
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            // Evita que el LookAndFeel cambie el botón
             boton.setUI(new BasicButtonUI());
 
             boton.addMouseListener(new MouseAdapter() {
@@ -201,6 +208,8 @@ public class Juego2 extends JFrame {
 
         panelCartas.revalidate();
         panelCartas.repaint();
+
+        SwingUtilities.invokeLater(this::redimensionarCartas);
     }
 
     private void manejarClick(JButton boton) {
@@ -220,13 +229,15 @@ public class Juego2 extends JFrame {
 
     private void mostrarImagen(JButton boton) {
         String img = (String) boton.getClientProperty("imagen");
-        ImageIcon icon = escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight());
-        boton.setIcon(icon);
+        int w = boton.getWidth();
+        int h = boton.getHeight();
+        if (w > 20 && h > 20) {
+            boton.setIcon(escalarImagen(img, w, h));
+        }
     }
 
     private void ocultarImagen(JButton boton) {
-        ImageIcon reversoEscalado = escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight());
-        boton.setIcon(reversoEscalado);
+        boton.setIcon(reverso);
     }
 
     private void comprobarPareja() {
@@ -249,7 +260,7 @@ public class Juego2 extends JFrame {
             parejasEncontradas++;
 
             if (parejasEncontradas == cartas.size() / 2) {
-                mostrarMensajeFinal();
+                JOptionPane.showMessageDialog(this, "¡Enhorabuena, has terminado el juego!", "Juego completado", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             Timer timer = new Timer(700, e -> {
@@ -266,15 +277,6 @@ public class Juego2 extends JFrame {
         }
     }
 
-    private void mostrarMensajeFinal() {
-        JOptionPane.showMessageDialog(
-            this,
-            "¡Enhorabuena, has terminado el juego!",
-            "Juego completado",
-            JOptionPane.INFORMATION_MESSAGE
-        );
-    }
-
     private void reiniciarJuego() {
         parejasEncontradas = 0;
         primeraCarta = null;
@@ -284,29 +286,37 @@ public class Juego2 extends JFrame {
         crearBotonesCartas();
     }
 
-    private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
-        if (ancho <= 0 || alto <= 0) {
-            ancho = 120;
-            alto = 120;
-        }
-
+    private ImageIcon escalarImagen(String nombreArchivo, int ancho, int alto) {
         try {
-            ImageIcon icon = new ImageIcon(ruta);
-            Image img = icon.getImage().getScaledInstance(ancho - 10, alto - 10, Image.SCALE_SMOOTH);
-            return new ImageIcon(img);
+            File archivo = new File("src/images/" + nombreArchivo);
+            if (!archivo.exists()) {
+                return reverso;
+            }
+
+            BufferedImage imgOriginal = ImageIO.read(archivo);
+            BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = buffered.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g2.drawImage(imgOriginal, 0, 0, ancho, alto, null);
+            g2.dispose();
+
+            return new ImageIcon(buffered);
         } catch (Exception e) {
-            return new ImageIcon();
+            return reverso;
         }
     }
 
     private void redimensionarCartas() {
         for (JButton boton : botones) {
+            int w = boton.getWidth();
+            int h = boton.getHeight();
             if ((boolean) boton.getClientProperty("descubierta")) {
-                String img = (String) boton.getClientProperty("imagen");
-                boton.setIcon(escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight()));
+                boton.setIcon(escalarImagen((String) boton.getClientProperty("imagen"), w, h));
             } else {
-                boton.setIcon(escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight()));
+                boton.setIcon(reverso);
             }
         }
+        panelCartas.revalidate();
+        panelCartas.repaint();
     }
 }
