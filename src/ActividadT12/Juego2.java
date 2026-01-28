@@ -116,7 +116,7 @@ public class Juego2 extends JFrame {
         JButton btnModoDificil = crearBotonInferior("Modo Difícil", new Color(60, 140, 255));
         btnModoDificil.addActionListener(e -> {
             dispose();
-            new Juego2_2().setVisible(true); // Tu modo difícil
+            new Juego2_2().setVisible(true); 
         });
 
         JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
@@ -145,7 +145,7 @@ public class Juego2 extends JFrame {
         btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // ⚡ Esto fuerza que el LookAndFeel no cambie el color
+
         btn.setUI(new BasicButtonUI());
 
         btn.addMouseListener(new MouseAdapter() {

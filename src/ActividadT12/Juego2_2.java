@@ -47,14 +47,24 @@ public class Juego2_2 extends JFrame {
         crearTitulo();
         crearPanelCartas();
         crearPanelSur();
-        crearBotonesCartas();
 
         // Tamaño fijo y centrado (igual que Juego2)
         setSize(1000, 700);
         setLocationRelativeTo(null);
+        
+        crearBotonesCartas();
 
-        // Redimensionar cartas después de que la ventana sea visible
-        EventQueue.invokeLater(() -> redimensionarCartas());
+        // ⭐ Forzar múltiples actualizaciones para asegurar carga correcta
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                Timer timer = new Timer(100, evt -> {
+                    redimensionarCartas();
+                    ((Timer)evt.getSource()).stop();
+                });
+                timer.start();
+            }
+        });
     }
 
     private void configurarVentana() {
@@ -78,9 +88,9 @@ public class Juego2_2 extends JFrame {
 
         String[] imagenes = {
             "leizip.png", "tote.png", "sevilla.png", "madrid.png",
-            "psg.png", "napoles.png", "milan.png", "city.png",
-            "juve.png", "inter.png", "borusia.png", "chelsea.png",
-            "bayer.png", "atletico.png", "barca.png"
+            "psg.png", "napoles.png", "milan.png", "city2.png",
+            "juve.png", "inter.png", "dormund.png", "chelseal.png",
+            "bayer.png", "atletico.web", "barcelona.png"
         };
 
         for (String img : imagenes) {
@@ -102,14 +112,15 @@ public class Juego2_2 extends JFrame {
 
     private void crearPanelCartas() {
         panelCartas = new JPanel();
-        panelCartas.setLayout(new GridLayout(5, 7, 12, 12));
+        panelCartas.setLayout(new GridLayout(5, 6, 12, 12));
         panelCartas.setBackground(new Color(25, 25, 25));
         contentPane.add(panelCartas, BorderLayout.CENTER);
 
+        // ⭐ Listener mejorado para redimensionar cuando cambie el tamaño
         panelCartas.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                redimensionarCartas();
+                SwingUtilities.invokeLater(() -> redimensionarCartas());
             }
         });
     }
@@ -130,7 +141,7 @@ public class Juego2_2 extends JFrame {
 
         JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
         btnSalir.addActionListener(e -> {
-        	dispose();
+            dispose();
             new PnatallaInicio().setVisible(true);
         });
 
@@ -178,9 +189,7 @@ public class Juego2_2 extends JFrame {
             boton.putClientProperty("imagen", cartas.get(i));
             boton.putClientProperty("descubierta", false);
 
-            boton.setIcon(escalarImagen("src/images/reverso.png", 120, 120));
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
             boton.setUI(new BasicButtonUI());
 
             boton.addMouseListener(new MouseAdapter() {
@@ -204,6 +213,17 @@ public class Juego2_2 extends JFrame {
 
         panelCartas.revalidate();
         panelCartas.repaint();
+        
+        // ⭐ Múltiples intentos de redimensionado para asegurar carga
+        SwingUtilities.invokeLater(() -> {
+            redimensionarCartas();
+            // Segundo intento por si el primero falla
+            Timer timer = new Timer(50, e -> {
+                redimensionarCartas();
+                ((Timer)e.getSource()).stop();
+            });
+            timer.start();
+        });
     }
 
     private void manejarClick(JButton boton) {
@@ -223,11 +243,24 @@ public class Juego2_2 extends JFrame {
 
     private void mostrarImagen(JButton boton) {
         String img = (String) boton.getClientProperty("imagen");
-        boton.setIcon(escalarImagen("src/images/" + img, boton.getWidth(), boton.getHeight()));
+        int w = boton.getWidth();
+        int h = boton.getHeight();
+        
+        // ⭐ Asegurar que se usa el tamaño completo del botón
+        if (w > 20 && h > 20) {
+            ImageIcon icon = escalarImagen("src/images/" + img, w, h);
+            boton.setIcon(icon);
+        }
     }
 
     private void ocultarImagen(JButton boton) {
-        boton.setIcon(escalarImagen("src/images/reverso.png", boton.getWidth(), boton.getHeight()));
+        int w = boton.getWidth();
+        int h = boton.getHeight();
+        
+        if (w > 20 && h > 20) {
+            ImageIcon icon = escalarImagen("src/images/reverso.png", w, h);
+            boton.setIcon(icon);
+        }
     }
 
     private void comprobarPareja() {
@@ -285,20 +318,28 @@ public class Juego2_2 extends JFrame {
         crearBotonesCartas();
     }
 
-    // ⭐ MÉTODO MEJORADO PARA QUE LAS IMÁGENES SE VEAN PERFECTAS ⭐
+    // ⭐ MÉTODO MEJORADO - Imágenes grandes con debugging
     private ImageIcon escalarImagen(String ruta, int ancho, int alto) {
         try {
             Image imgOriginal = ImageIO.read(new File(ruta));
 
-            int anchoFinal = Math.max(ancho - 10, 10);
-            int altoFinal = Math.max(alto - 10, 10);
+            // ⭐ Cambio: usar casi todo el espacio disponible
+            int anchoFinal = Math.max(ancho - 8, 20);
+            int altoFinal = Math.max(alto - 8, 20);
+
+            // Si el tamaño es muy pequeño, no escalar
+            if (ancho < 20 || alto < 20) {
+                return new ImageIcon();
+            }
 
             BufferedImage buffered = new BufferedImage(anchoFinal, altoFinal, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = buffered.createGraphics();
 
+            // ⭐ Mejores hints de renderizado
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 
             g2.drawImage(imgOriginal, 0, 0, anchoFinal, altoFinal, null);
             g2.dispose();
@@ -306,6 +347,8 @@ public class Juego2_2 extends JFrame {
             return new ImageIcon(buffered);
 
         } catch (Exception e) {
+            System.err.println("Error cargando imagen: " + ruta);
+            e.printStackTrace();
             return new ImageIcon();
         }
     }
@@ -315,12 +358,22 @@ public class Juego2_2 extends JFrame {
             int w = boton.getWidth();
             int h = boton.getHeight();
 
-            if ((boolean) boton.getClientProperty("descubierta")) {
-                String img = (String) boton.getClientProperty("imagen");
-                boton.setIcon(escalarImagen("src/images/" + img, w, h));
-            } else {
-                boton.setIcon(escalarImagen("src/images/reverso.png", w, h));
+            // Debug: imprimir tamaños para ver qué está pasando
+            // System.out.println("Botón tamaño: " + w + "x" + h);
+
+            // ⭐ Solo redimensionar si el botón tiene un tamaño razonable
+            if (w > 20 && h > 20) {
+                if ((boolean) boton.getClientProperty("descubierta")) {
+                    String img = (String) boton.getClientProperty("imagen");
+                    ImageIcon icon = escalarImagen("src/images/" + img, w, h);
+                    boton.setIcon(icon);
+                } else {
+                    ImageIcon icon = escalarImagen("src/images/reverso.png", w, h);
+                    boton.setIcon(icon);
+                }
             }
         }
+        panelCartas.revalidate();
+        panelCartas.repaint();
     }
 }
