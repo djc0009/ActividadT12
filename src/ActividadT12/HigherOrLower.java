@@ -1,475 +1,513 @@
 package ActividadT12;
 
+
+
 import javax.swing.*;
+
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
+
 import java.util.Random;
 
+
+
 public class HigherOrLower extends JFrame {
-    /* =======================
-    CLASE STADIUM
- ======================== */
- static class Stadium {
-     String name;
-     int capacity;
-     String imagePath;
 
-     Stadium(String name, int capacity, String imagePath) {
-         this.name = name;
-         this.capacity = capacity;
-         this.imagePath = imagePath;
-     }
- }
- /* =======================
-    LABEL CON SOMBRA
- ======================== */
- static class ShadowLabel extends JLabel {
-     private final Color shadowColor = new Color(0, 0, 0, 180);
-     private final int shadowOffset = 4;
-     public ShadowLabel(String text, int align) {
-         super(text, align);
-         setOpaque(false);
-     }
 
-     @Override
-     protected void paintComponent(Graphics g) {
-         Graphics2D g2 = (Graphics2D) g.create();
-         g2.setFont(getFont());
-         FontMetrics fm = g2.getFontMetrics();
-         int x = (getWidth() - fm.stringWidth(getText())) / 2;
-         int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-         // Sombra
-         g2.setColor(shadowColor);
-         g2.drawString(getText(), x + shadowOffset, y + shadowOffset);
-         // Texto principal
-         g2.setColor(getForeground());
-         g2.drawString(getText(), x, y);
-         g2.dispose();
-     }
- }
- /* =======================
-    CONSTANTES VISUALES
- ======================== */
- private static final Color PRIMARY = new Color(255, 215, 0); // Oro
- private static final Color SUCCESS = new Color(76, 175, 80);
- private static final Color DANGER = new Color(244, 67, 54);
- private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 70);
- private static final Font TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 65);
- private static final Font SCORE_FONT = new Font("Segoe UI", Font.BOLD, 58);
- /* =======================
-    VARIABLES
- ======================== */
- private ArrayList<Stadium> stadiums;
- private Stadium current;
 
- private Stadium next;
+	//Creamos la clase de estadio con sus variables
 
+    static class Stadium {
 
+        String name;
 
- private JLabel currentLabel;
+        int capacity;
 
- private JLabel nextLabel;
+        String imagePath;
 
- private JLabel scoreLabel;
 
- private JLabel resultLabel;
 
- private JLabel backgroundLabel;
+        Stadium(String name, int capacity, String imagePath) {
 
+            this.name = name;
 
+            this.capacity = capacity;
 
- private int score = 0;
+            this.imagePath = imagePath;
 
- private final Random random = new Random();
+        }
 
+    }
 
+    
 
- /* =======================
+    //Clase ShadowLabel que extiende de JLabel, esta clase hace que el texto de la imagen sea visible
 
-    CONSTRUCTOR
+    static class ShadowLabel extends JLabel {
 
- ======================== */
 
- public HigherOrLower() {
 
-     setTitle("Higher or Lower - Estadios de Fútbol ⚽");
+        private final Color shadowColor = new Color(0, 0, 0, 180);
 
-     setSize(1920, 1080);
+        private final int shadowOffset = 4;
 
-     setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-     setLocationRelativeTo(null);
 
+        public ShadowLabel(String text, int align) {
 
+            super(text, align);
 
-     initData();
+            setOpaque(false);
 
-     initUI();
+        }
 
+        // Funcion Paint para dibujar el texto con sombra
 
+        @Override
 
-     addComponentListener(new java.awt.event.ComponentAdapter() {
+        protected void paintComponent(Graphics g) {
 
-         public void componentResized(java.awt.event.ComponentEvent evt) {
+            Graphics2D g2 = (Graphics2D) g.create();
 
-             if (current != null) {
+            g2.setFont(getFont());
 
-                 updateBackground(current.imagePath);
 
-             }
 
-         }
+            FontMetrics fm = g2.getFontMetrics();
 
-     });
+            int x = (getWidth() - fm.stringWidth(getText())) / 2;
 
+            int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
 
 
-     SwingUtilities.invokeLater(this::nextRound);
 
- }
+            g2.setColor(shadowColor);
 
+            g2.drawString(getText(), x + shadowOffset, y + shadowOffset);
 
 
- /* =======================
 
-    DATOS
+            g2.setColor(getForeground());
 
- ======================== */
+            g2.drawString(getText(), x, y);
 
- private void initData() {
 
-     stadiums = new ArrayList<>();
 
+            g2.dispose();
 
+        }
 
-     stadiums.add(new Stadium("Camp Nou - Barcelona", 99354, "/images/camp_nou.png"));
+    }
 
-     stadiums.add(new Stadium("Santiago Bernabeu - Real Madrid", 81044, "/images/bernabeu.png"));
+    // Variables finales para definir colores y el fuente de las letras
 
-     stadiums.add(new Stadium("Wembley Stadium - Inglaterra", 90000, "/images/wembley.png"));
+    private static final Color PRIMARY = new Color(255, 215, 0);
 
-     stadiums.add(new Stadium("Allianz Arena - Bayern Munich", 75000, "/images/allianz.png"));
+    private static final Color SUCCESS = new Color(76, 175, 80);
 
-     stadiums.add(new Stadium("Old Trafford - Manchester United", 74879, "/images/old_trafford.png"));
+    private static final Color DANGER = new Color(244, 67, 54);
 
-     stadiums.add(new Stadium("San Siro - Milan", 80018, "/images/san_siro.png"));
 
-     stadiums.add(new Stadium("Metropolitano - Atletico Madrid", 68456, "/images/metropolitano.png"));
 
-     stadiums.add(new Stadium("Sanchez Pizjuan - Sevilla", 43883, "/images/pizjuan.png"));
+    private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 70);
 
-     stadiums.add(new Stadium("Los Carmenes - Granada", 20000, "/images/carmenes.png"));
+    private static final Font TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 65);
 
- }
+    private static final Font SCORE_FONT = new Font("Segoe UI", Font.BOLD, 58);
 
+    // Creamos las variables principales
 
+    private ArrayList<Stadium> stadiums;
 
- /* =======================
+    // Lista con los dos estadios a comparar, current el que esta actualmente, next el que se esta comparando
 
-    UI
+    private Stadium current;
 
- ======================== */
+    private Stadium next;
 
- private void initUI() {
+    
 
-     backgroundLabel = new JLabel();
+    private JLabel currentLabel;
 
-     backgroundLabel.setLayout(new BorderLayout());
+    private JLabel nextLabel;
 
-     setContentPane(backgroundLabel);
+    private JLabel scoreLabel;
 
+    private JLabel resultLabel;
 
 
-     JPanel centerPanel = new JPanel(new GridLayout(4, 1, 10, 10));
 
-     centerPanel.setOpaque(false);
+    private JLabel backgroundLabel;
 
-     centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
+    private JPanel mainPanel;
 
+    // Creamos la variable que llevara la cuenta de los puntos que consigue el usuario
 
+    private int score = 0;
 
-     currentLabel = createLabel("", TITLE_FONT);
+    private final Random random = new Random();
 
-     nextLabel = createLabel("", TEXT_FONT);
+    // Constructor, donde se crea el titulo, el tamaño de la ventana, el abrir y cerrar la ventana
 
-     scoreLabel = createLabel("Puntuación: 0", SCORE_FONT);
+    public HigherOrLower() {
 
-     resultLabel = createLabel("", TEXT_FONT);
+        setTitle("Higher or Lower - Estadios ⚽");
 
+        setSize(1920, 1080);
 
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-     centerPanel.add(currentLabel);
+        setLocationRelativeTo(null);
 
-     centerPanel.add(nextLabel);
 
-     centerPanel.add(scoreLabel);
 
-     centerPanel.add(resultLabel);
+        initData();
 
+        initUI();
 
 
-     backgroundLabel.add(centerPanel, BorderLayout.CENTER);
 
+        addComponentListener(new java.awt.event.ComponentAdapter() {
 
+            public void componentResized(java.awt.event.ComponentEvent evt) {
 
-     JPanel buttonsPanel = new JPanel();
+                if (current != null) {
 
-     buttonsPanel.setOpaque(false);
+                    updateBackground(current.imagePath);
 
-     buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+                }
 
+            }
 
+        });
 
-     JButton higherBtn = createButton("Más asientos", SUCCESS);
 
-     JButton lowerBtn = createButton("Menos asientos", DANGER);
 
+        SwingUtilities.invokeLater(this::nextRound);
 
+    }
 
-     higherBtn.addActionListener(e -> checkAnswer(true));
+    // Aqui creamos el contenido de la lista de estadios con todos los estadios que vamos a añadirm junto con su capacidad y su foto
 
-     lowerBtn.addActionListener(e -> checkAnswer(false));
+    private void initData() {
 
+        stadiums = new ArrayList<>();
 
 
-     buttonsPanel.add(higherBtn);
 
-     buttonsPanel.add(lowerBtn);
+        stadiums.add(new Stadium("Camp Nou - Barcelona", 99354, "/images/camp_nou.png"));
 
+        stadiums.add(new Stadium("Bernabeu - Real Madrid", 81044, "/images/bernabeu.png"));
 
+        stadiums.add(new Stadium("Wembley Stadium - Inglaterra", 90000, "/images/wembley.png"));
 
-     backgroundLabel.add(buttonsPanel, BorderLayout.SOUTH);
+        stadiums.add(new Stadium("Allianz Arena - Bayern Munich", 75000, "/images/allianz.png"));
 
-  
+        stadiums.add(new Stadium("Old Trafford - M.United", 74879, "/images/old_trafford.png"));
 
-     JButton exitButton = new JButton("Salir");
+        stadiums.add(new Stadium("San Siro - Milan", 80018, "/images/san_siro.png"));
 
-     exitButton.addActionListener(new ActionListener() {
+        stadiums.add(new Stadium("Metropolitano-Atletico Madrid", 68456, "/images/metropolitano.png"));
 
-     	public void actionPerformed(ActionEvent e) {
-     		dispose();
-            new PnatallaInicio().setVisible(true);
-     	}
+        stadiums.add(new Stadium("Sanchez Pizjuan - Sevilla", 43883, "/images/pizjuan.png"));
 
-     });
+        stadiums.add(new Stadium("Los Carmenes - Granada", 20000, "/images/carmenes.png"));
 
-     exitButton.setFont(new Font("Segoe UI", Font.BOLD, 28));
+    }
 
-     exitButton.setFocusPainted(false);
 
-     exitButton.setBackground(new Color(255, 0, 0));
 
-     exitButton.setForeground(Color.WHITE);
+    // Inicializamos la interfaz de usuario
 
-     exitButton.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+    private void initUI() {
 
 
 
-     JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        backgroundLabel = new JLabel();
 
-     exitPanel.setOpaque(false);
+        backgroundLabel.setLayout(new BorderLayout());
 
-     exitPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 20));
 
-     exitPanel.add(exitButton);
 
+        mainPanel = new JPanel(new BorderLayout());
 
+        mainPanel.setOpaque(false);
 
-     backgroundLabel.add(exitPanel, BorderLayout.EAST);
 
 
+        setContentPane(backgroundLabel);
 
- }
+        backgroundLabel.add(mainPanel);
 
 
 
- /* =======================
+        JPanel centerPanel = new JPanel(new GridLayout(4, 1, 10, 10));
 
-    LÓGICA DEL JUEGO
+        centerPanel.setOpaque(false);
 
- ======================== */
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
 
- private void nextRound() {
 
-     if (current == null) current = getRandomStadium();
 
+        currentLabel = createLabel("", TITLE_FONT);
 
+        nextLabel = createLabel("", TEXT_FONT);
 
-     next = getRandomStadium();
+        scoreLabel = createLabel("Puntuación: 0", SCORE_FONT);
 
-     while (next == current) next = getRandomStadium();
+        resultLabel = createLabel("", TEXT_FONT);
 
 
 
-     currentLabel.setText(current.name + " tiene " + format(current.capacity) + " asientos");
+        centerPanel.add(currentLabel);
 
-     nextLabel.setText(next.name + " tiene ¿más o menos asientos?");
+        centerPanel.add(nextLabel);
 
-     resultLabel.setText("");
+        centerPanel.add(scoreLabel);
 
+        centerPanel.add(resultLabel);
 
 
-     updateBackground(current.imagePath);
 
- }
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
 
 
 
- private void checkAnswer(boolean higher) {
+        JPanel buttonsPanel = new JPanel();
 
-     boolean correct = higher
+        buttonsPanel.setOpaque(false);
 
-             ? next.capacity >= current.capacity
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
-             : next.capacity <= current.capacity;
 
 
+        JButton higherBtn = createButton("Más asientos", SUCCESS);
 
-     if (correct) {
+        JButton lowerBtn = createButton("Menos asientos", DANGER);
 
-         score++;
 
-         resultLabel.setForeground(SUCCESS);
 
-         resultLabel.setText("✔ ¡Correcto! (" + format(next.capacity) + " asientos)");
+        higherBtn.addActionListener(e -> checkAnswer(true));
 
-         scoreLabel.setText("Puntuación: " + score);
+        lowerBtn.addActionListener(e -> checkAnswer(false));
 
-         current = next;
 
-         SwingUtilities.invokeLater(this::nextRound);
 
-     } else {
+        buttonsPanel.add(higherBtn);
 
-         JOptionPane.showMessageDialog(
+        buttonsPanel.add(lowerBtn);
 
-                 this,
 
-                 "❌ Has perdido\n\n" + next.name + " tiene " + format(next.capacity) +
 
-                         " asientos\n\nPuntuación final: " + score,
+        mainPanel.add(buttonsPanel, BorderLayout.SOUTH);
 
-                 "Fin del juego",
 
-                 JOptionPane.INFORMATION_MESSAGE
 
-         );
+        JButton exitButton = createButton("Salir", Color.RED);
 
-         resetGame();
+        exitButton.setFont(new Font("Segoe UI", Font.BOLD, 28));
 
-     }
+    
+        
+        
+        exitButton.addActionListener(e -> {
+            dispose();
+            EventQueue.invokeLater(() -> new PnatallaInicio().setVisible(true));
+        });
+        		
+        
 
- }
 
 
+        JPanel exitPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
- private void resetGame() {
+        exitPanel.setOpaque(false);
 
-     score = 0;
+        exitPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 20));
 
-     current = null;
+        exitPanel.add(exitButton);
 
-     scoreLabel.setText("Puntuación: 0");
 
-     nextRound();
 
- }
+        mainPanel.add(exitPanel, BorderLayout.EAST);
 
+    }
 
+    // En caso de que no haya estadio actual crea un aleatorio y luego elige otro, tambien actualiza los textos y la imagen
 
- /* =======================
+    private void nextRound() {
 
-    UTILIDADES
+        if (current == null) current = getRandomStadium();
 
- ======================== */
 
- private JLabel createLabel(String text, Font font) {
 
-     ShadowLabel label = new ShadowLabel(text, SwingConstants.CENTER);
+        next = getRandomStadium();
 
-     label.setFont(font);
+        while (next == current) next = getRandomStadium();
 
-     label.setForeground(PRIMARY);
 
-     return label;
 
- }
+        currentLabel.setText(current.name + " tiene " + format(current.capacity) + " asientos");
 
+        nextLabel.setText(next.name + " tiene ¿más o menos asientos?");
 
+        resultLabel.setText("");
 
- private JButton createButton(String text, Color bg) {
 
-     JButton btn = new JButton(text);
 
-     btn.setFont(TEXT_FONT);
+        updateBackground(current.imagePath);
 
-     btn.setFocusPainted(false);
+    }
 
-     btn.setBackground(bg);
+    // Esta funcion comprueba si el jugador ha acertado
 
-     btn.setForeground(Color.WHITE);
+    private void checkAnswer(boolean higher) {
 
-     btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        boolean correct = higher
 
-     return btn;
+                ? next.capacity >= current.capacity
 
- }
+                : next.capacity <= current.capacity;
 
 
 
- private Stadium getRandomStadium() {
+        if (correct) {
 
-     return stadiums.get(random.nextInt(stadiums.size()));
+            score++;
 
- }
+            resultLabel.setForeground(SUCCESS);
 
+            resultLabel.setText("✔ ¡Correcto! (" + format(next.capacity) + " asientos)");
 
+            scoreLabel.setText("Puntuación: " + score);
 
- private String format(int number) {
+            current = next;
 
-     return String.format("%,d", number).replace(',', '.');
+            SwingUtilities.invokeLater(this::nextRound);
 
- }
+        } else {
 
+            JOptionPane.showMessageDialog(
 
+                    this,
 
- private void updateBackground(String path) {
+                    "❌ Has perdido\n\n" + next.name + " tiene " + format(next.capacity) +
 
-     java.net.URL imgURL = getClass().getResource(path);
+                            " asientos\n\nPuntuación final: " + score,
 
-     if (imgURL == null) return;
+                    "Fin del juego",
 
+                    JOptionPane.INFORMATION_MESSAGE
 
+            );
 
-     ImageIcon icon = new ImageIcon(imgURL);
+            resetGame();
 
-     Image img = icon.getImage().getScaledInstance(
+        }
 
-             backgroundLabel.getWidth(),
+    }
 
-             backgroundLabel.getHeight(),
+    // Hace un reset completo del juego, es decir, la puntuacion empieza de nuevo ademas de crear dos nuevos estadios llamando a next round e igualando la variable current a null
 
-             Image.SCALE_SMOOTH
+    private void resetGame() {
 
-     );
+        score = 0;
 
-     backgroundLabel.setIcon(new ImageIcon(img));
+        current = null;
 
- }
+        scoreLabel.setText("Puntuación: 0");
 
+        nextRound();
 
+    }
 
- /* =======================
 
-    MAIN
 
- ======================== */
+    private JLabel createLabel(String text, Font font) {
 
- public static void main(String[] args) {
+        ShadowLabel label = new ShadowLabel(text, SwingConstants.CENTER);
 
-     SwingUtilities.invokeLater(() -> new HigherOrLower().setVisible(true));
+        label.setFont(font);
 
- }
+        label.setForeground(PRIMARY);
+
+        return label;
+
+    }
+
+    // Funcion que crea los botones que recoge el texto del boton y el color
+
+    private JButton createButton(String text, Color bg) {
+
+        JButton btn = new JButton(text);
+
+        btn.setFont(TEXT_FONT);
+
+        btn.setFocusPainted(false);
+
+        btn.setBackground(bg);
+
+        btn.setForeground(Color.WHITE);
+
+        btn.setOpaque(true);
+
+        btn.setContentAreaFilled(true);
+
+        btn.setBorderPainted(false);
+
+        btn.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+
+        return btn;
+
+    }
+
+    //Getter de los estadios aleatorios
+
+    private Stadium getRandomStadium() {
+
+        return stadiums.get(random.nextInt(stadiums.size()));
+
+    }
+
+
+
+    private String format(int number) {
+
+        return String.format("%,d", number).replace(',', '.');
+
+    }
+
+    // Funcion que cambia el fondo de la aplicacion con el estadio actual (current)
+
+    private void updateBackground(String path) {
+
+        java.net.URL imgURL = getClass().getResource(path);
+
+        if (imgURL == null) return;
+
+
+
+        Image img = new ImageIcon(imgURL).getImage().getScaledInstance(
+
+                getWidth(),
+
+                getHeight(),
+
+                Image.SCALE_SMOOTH
+
+        );
+
+        backgroundLabel.setIcon(new ImageIcon(img));
+
+    }
+
+
+
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(() -> new HigherOrLower().setVisible(true));
+
+    }
+
 }
