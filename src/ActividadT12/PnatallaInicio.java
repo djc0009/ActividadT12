@@ -92,7 +92,7 @@ public class PnatallaInicio extends JFrame {
         // ===== BOTÓN INFERIOR =====
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false);
-        JButton btnSalir = crearBotonSecundario("❌ SALIR");
+        JButton btnSalir = crearBotonSecundario("SALIR");
         btnSalir.addActionListener(e -> System.exit(0));
         bottomPanel.add(btnSalir);
         panel.add(bottomPanel, BorderLayout.SOUTH);
@@ -205,23 +205,29 @@ public class PnatallaInicio extends JFrame {
     private JButton crearBotonSecundario(String texto) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Arial", Font.BOLD, 24));
-        btn.setBackground(new Color(70, 70, 90));
+
+        // ----- Estilo rojo -----
+        btn.setBackground(Color.RED);
         btn.setForeground(Color.WHITE);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createLineBorder(new Color(255, 215, 0), 3));
+
         btn.setPreferredSize(new Dimension(280, 60));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        // ----- Efecto hover -----
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                btn.setBackground(new Color(100, 100, 120));
+                btn.setBackground(new Color(180, 0, 0));
             }
 
             public void mouseExited(MouseEvent e) {
-                btn.setBackground(new Color(70, 70, 90));
+                btn.setBackground(Color.RED);
             }
         });
 
         return btn;
     }
+
 }
