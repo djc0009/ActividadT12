@@ -8,135 +8,60 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class HigherOrLower extends JFrame {
-
     /* =======================
-
     CLASE STADIUM
-
  ======================== */
-
  static class Stadium {
-
      String name;
-
      int capacity;
-
      String imagePath;
 
-
-
      Stadium(String name, int capacity, String imagePath) {
-
          this.name = name;
-
          this.capacity = capacity;
-
          this.imagePath = imagePath;
-
      }
-
  }
-
-
-
  /* =======================
-
     LABEL CON SOMBRA
-
  ======================== */
-
  static class ShadowLabel extends JLabel {
-
-
-
      private final Color shadowColor = new Color(0, 0, 0, 180);
-
      private final int shadowOffset = 4;
-
-
-
      public ShadowLabel(String text, int align) {
-
          super(text, align);
-
          setOpaque(false);
-
      }
-
-
 
      @Override
-
      protected void paintComponent(Graphics g) {
-
          Graphics2D g2 = (Graphics2D) g.create();
-
          g2.setFont(getFont());
-
-
-
          FontMetrics fm = g2.getFontMetrics();
-
          int x = (getWidth() - fm.stringWidth(getText())) / 2;
-
          int y = (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
-
-
-
          // Sombra
-
          g2.setColor(shadowColor);
-
          g2.drawString(getText(), x + shadowOffset, y + shadowOffset);
-
-
-
          // Texto principal
-
          g2.setColor(getForeground());
-
          g2.drawString(getText(), x, y);
-
-
-
          g2.dispose();
-
      }
-
  }
-
-
-
  /* =======================
-
     CONSTANTES VISUALES
-
  ======================== */
-
  private static final Color PRIMARY = new Color(255, 215, 0); // Oro
-
  private static final Color SUCCESS = new Color(76, 175, 80);
-
  private static final Color DANGER = new Color(244, 67, 54);
-
-
-
  private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 70);
-
  private static final Font TEXT_FONT = new Font("Segoe UI", Font.PLAIN, 65);
-
  private static final Font SCORE_FONT = new Font("Segoe UI", Font.BOLD, 58);
-
-
-
  /* =======================
-
     VARIABLES
-
  ======================== */
-
  private ArrayList<Stadium> stadiums;
-
  private Stadium current;
 
  private Stadium next;
