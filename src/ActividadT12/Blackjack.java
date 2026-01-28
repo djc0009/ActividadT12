@@ -1,185 +1,227 @@
 package ActividadT12;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridLayout;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.awt.Color;
 
 public class Blackjack extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
 
-	private int puntosJugador = 0;
-	private int puntosBanca = 0;
+    private int puntosJugador = 0;
+    private int puntosBanca = 0;
+    private int dinero = 1000;
 
-	private JLabel lblPuntosJugador;
-	private JLabel lblPuntosBanca;
+    private JLabel lblPuntosJugador;
+    private JLabel lblPuntosBanca;
+    private JLabel lblDinero;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				Blackjack frame = new Blackjack();
-				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-				frame.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                Blackjack frame = new Blackjack();
+                frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // pantalla completa
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-	public Blackjack() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+    public Blackjack() {
+        setTitle("BLACKJACK");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-		contentPane = new JPanel();
-		contentPane.setBackground(Color.BLACK);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new GridLayout(0, 1, 0, 0));
+        contentPane = new JPanel();
+        contentPane.setBackground(Color.BLACK);
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(new GridLayout(0, 1));
 
-		// ================= TITULO =================
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBackground(Color.BLACK);
-		contentPane.add(panel);
+        // ================= TÍTULO =================
+        JPanel panelTitulo = new JPanel(new BorderLayout());
+        panelTitulo.setBackground(Color.BLACK);
 
-		JLabel lblNewLabel = new JLabel("BLACKJACK", JLabel.CENTER);
-		lblNewLabel.setForeground(Color.YELLOW);
-		lblNewLabel.setFont(new Font("Century Schoolbook", Font.BOLD, 70));
-		lblNewLabel.setPreferredSize(new Dimension(400, 80));
-		panel.add(lblNewLabel, BorderLayout.NORTH);
+        JLabel lblTitulo = new JLabel("BLACKJACK", JLabel.CENTER);
+        lblTitulo.setForeground(Color.YELLOW);
+        lblTitulo.setFont(new Font("Century Schoolbook", Font.BOLD, 70));
+        lblTitulo.setPreferredSize(new Dimension(400, 80));
 
-		JPanel panel_1 = new JPanel(new GridLayout(3, 0));
-		panel_1.setBackground(Color.BLACK);
-		panel.add(panel_1, BorderLayout.CENTER);
+        panelTitulo.add(lblTitulo, BorderLayout.NORTH);
+        contentPane.add(panelTitulo);
 
-		// ================= BANCA =================
-		JPanel contenedorBanca = new JPanel(new BorderLayout());
-		contenedorBanca.setOpaque(false);
-		contenedorBanca.setBorder(BorderFactory.createEmptyBorder(20, 250, 0, 250));
+        JPanel panelCentral = new JPanel(new GridLayout(4, 1)); // 4 filas: banca, jugador, dinero, botones
+        panelCentral.setBackground(Color.BLACK);
+        panelTitulo.add(panelCentral, BorderLayout.CENTER);
 
-		lblPuntosBanca = new JLabel("Banca: 0", JLabel.CENTER);
-		lblPuntosBanca.setForeground(Color.WHITE);
-		lblPuntosBanca.setFont(new Font("Verdana", Font.BOLD, 25));
-		contenedorBanca.add(lblPuntosBanca, BorderLayout.NORTH);
+        // ================= BANCA =================
+        JPanel contenedorBanca = new JPanel(new BorderLayout());
+        contenedorBanca.setOpaque(false);
+        contenedorBanca.setBorder(BorderFactory.createEmptyBorder(20, 250, 0, 250));
 
-		JPanel panelCartasBanca = new JPanel();
-		panelCartasBanca.setBackground(new Color(0, 102, 0));
-		panelCartasBanca.setPreferredSize(new Dimension(600, 150));
-		panelCartasBanca.setBorder(BorderFactory.createLineBorder(new Color(212, 175, 55), 3));
-		contenedorBanca.add(panelCartasBanca, BorderLayout.CENTER);
+        lblPuntosBanca = new JLabel("Banca: 0", JLabel.CENTER);
+        lblPuntosBanca.setForeground(Color.WHITE);
+        lblPuntosBanca.setFont(new Font("Verdana", Font.BOLD, 25));
+        contenedorBanca.add(lblPuntosBanca, BorderLayout.NORTH);
 
-		panel_1.add(contenedorBanca);
+        JPanel panelCartasBanca = new JPanel();
+        panelCartasBanca.setBackground(new Color(0, 102, 0));
+        panelCartasBanca.setPreferredSize(new Dimension(600, 150));
+        panelCartasBanca.setBorder(BorderFactory.createLineBorder(new Color(212, 175, 55), 3));
 
-		// ================= JUGADOR =================
-		JPanel contenedorJugador = new JPanel(new BorderLayout());
-		contenedorJugador.setOpaque(false);
-		contenedorJugador.setBorder(BorderFactory.createEmptyBorder(0, 250, 0, 250));
+        contenedorBanca.add(panelCartasBanca, BorderLayout.CENTER);
+        panelCentral.add(contenedorBanca);
 
-		lblPuntosJugador = new JLabel("Jugador: 0", JLabel.CENTER);
-		lblPuntosJugador.setForeground(Color.WHITE);
-		lblPuntosJugador.setFont(new Font("Verdana", Font.BOLD, 25));
-		contenedorJugador.add(lblPuntosJugador, BorderLayout.NORTH);
+        // ================= JUGADOR =================
+        JPanel contenedorJugador = new JPanel(new BorderLayout());
+        contenedorJugador.setOpaque(false);
+        contenedorJugador.setBorder(BorderFactory.createEmptyBorder(0, 250, 0, 250));
 
-		JPanel panelTusCartas = new JPanel();
-		panelTusCartas.setBackground(new Color(0, 102, 0));
-		panelTusCartas.setPreferredSize(new Dimension(600, 300));
-		panelTusCartas.setBorder(BorderFactory.createLineBorder(new Color(212, 175, 55), 3));
-		contenedorJugador.add(panelTusCartas, BorderLayout.CENTER);
+        lblPuntosJugador = new JLabel("Jugador: 0", JLabel.CENTER);
+        lblPuntosJugador.setForeground(Color.WHITE);
+        lblPuntosJugador.setFont(new Font("Verdana", Font.BOLD, 25));
+        contenedorJugador.add(lblPuntosJugador, BorderLayout.NORTH);
 
-		panel_1.add(contenedorJugador);
+        JPanel panelTusCartas = new JPanel();
+        panelTusCartas.setBackground(new Color(0, 102, 0));
+        panelTusCartas.setPreferredSize(new Dimension(600, 300));
+        panelTusCartas.setBorder(BorderFactory.createLineBorder(new Color(212, 175, 55), 3));
 
-		// ================= BOTONES =================
-		JPanel panelBotones = new JPanel();
-		panelBotones.setBackground(Color.BLACK);
-		panelBotones.setBorder(BorderFactory.createEmptyBorder(100, 0, 0, 0));
-		panel_1.add(panelBotones);
+        contenedorJugador.add(panelTusCartas, BorderLayout.CENTER);
+        panelCentral.add(contenedorJugador);
 
-		JButton btnPedir = new JButton("PEDIR");
-		btnPedir.setFont(new Font("Verdana", Font.BOLD, 30));
-		btnPedir.setPreferredSize(new Dimension(400, 80));
-		btnPedir.addActionListener(e -> {
-			int carta = (int) (Math.random() * 10) + 1;
-			puntosJugador += carta;
-			lblPuntosJugador.setText("Jugador: " + puntosJugador);
+        // ================= DINERO =================
+        lblDinero = new JLabel("Dinero: " + dinero + " €", JLabel.CENTER);
+        lblDinero.setForeground(Color.ORANGE);
+        lblDinero.setFont(new Font("Verdana", Font.BOLD, 25));
+        panelCentral.add(lblDinero);
 
-			panelTusCartas.add(crearCarta(carta));
-			panelTusCartas.revalidate();
-			panelTusCartas.repaint();
+        // ================= BOTONES =================
+        JPanel panelBotones = new JPanel();
+        panelBotones.setBackground(Color.BLACK);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        panelCentral.add(panelBotones);
 
-			if (puntosJugador > 21) {
-				JOptionPane.showMessageDialog(this, "PIERDES. Te has pasado con " + puntosJugador);
-				btnPedir.setEnabled(false);
-			}
-		});
-		panelBotones.add(btnPedir);
+        JButton btnPedir = crearBoton("PEDIR");
+        JButton btnPlantarse = crearBoton("PLANTARSE");
+        JButton btnIniciar = crearBoton("INICIAR");
+        JButton btnVolver = crearBoton("VOLVER");
 
-		JButton btnPlantarse = new JButton("PLANTARSE");
-		btnPlantarse.setFont(new Font("Verdana", Font.BOLD, 30));
-		btnPlantarse.setPreferredSize(new Dimension(400, 80));
-		btnPlantarse.addActionListener(e -> {
-			while (puntosBanca < 17) {
-				int carta = (int) (Math.random() * 10) + 1;
-				puntosBanca += carta;
-				lblPuntosBanca.setText("Banca: " + puntosBanca);
+        // ----- ACCIONES -----
+        btnPedir.addActionListener(e -> {
+            int carta = (int) (Math.random() * 10) + 1;
+            puntosJugador += carta;
+            lblPuntosJugador.setText("Jugador: " + puntosJugador);
 
-				panelCartasBanca.add(crearCartaBanca(carta));
-			}
-			panelCartasBanca.repaint();
+            panelTusCartas.add(crearCarta(carta));
+            panelTusCartas.revalidate();
+            panelTusCartas.repaint();
 
-			String resultado;
-			if (puntosBanca > 21 || puntosJugador > puntosBanca) {
-				resultado = "GANAS 🟢";
-			} else if (puntosJugador == puntosBanca) {
-				resultado = "EMPATE ⚖";
-			} else {
-				resultado = "PIERDES 🔴";
-			}
-			JOptionPane.showMessageDialog(this, resultado);
-		});
-		panelBotones.add(btnPlantarse);
+            if (puntosJugador > 21) {
+                JOptionPane.showMessageDialog(this, "PIERDES. Te has pasado con " + puntosJugador);
+                btnPedir.setEnabled(false);
+                btnPlantarse.setEnabled(false);
+            }
+        });
 
-		JButton btnIniciar = new JButton("INICIAR");
-		btnIniciar.setFont(new Font("Verdana", Font.BOLD, 30));
-		btnIniciar.setPreferredSize(new Dimension(400, 80));
-		btnIniciar.addActionListener(e -> {
-			panelTusCartas.removeAll();
-			panelCartasBanca.removeAll();
-			panelTusCartas.repaint();
-			panelCartasBanca.repaint();
+        btnPlantarse.addActionListener(e -> {
+            while (puntosBanca < 17) {
+                int carta = (int) (Math.random() * 10) + 1;
+                puntosBanca += carta;
+                lblPuntosBanca.setText("Banca: " + puntosBanca);
 
-			puntosJugador = 0;
-			puntosBanca = 0;
-			lblPuntosJugador.setText("Jugador: 0");
-			lblPuntosBanca.setText("Banca: 0");
+                panelCartasBanca.add(crearCartaBanca(carta));
+            }
+            panelCartasBanca.repaint();
 
-			btnPedir.setEnabled(true);
-		});
-		panelBotones.add(btnIniciar);
-	}
+            String resultado;
+            if (puntosBanca > 21 || puntosJugador > puntosBanca) {
+                resultado = "GANAS 100€";
+                dinero += 200; // ganancia
+            } else if (puntosJugador == puntosBanca) {
+                resultado = "EMPATE ⚖";
+                dinero += 100; // devuelve apuesta
+            } else {
+                resultado = "PIERDES 100€";
+                // apuesta ya descontada al iniciar
+            }
 
-	private JLabel crearCarta(int valor) {
-		JLabel carta = new JLabel(String.valueOf(valor), JLabel.CENTER);
-		carta.setPreferredSize(new Dimension(120, 180));
-		carta.setFont(new Font("Arial", Font.BOLD, 40));
-		carta.setOpaque(true);
-		carta.setBackground(Color.WHITE);
-		carta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-		return carta;
-	}
+            lblDinero.setText("Dinero: " + dinero + " €");
+            JOptionPane.showMessageDialog(this, resultado);
 
-	private JLabel crearCartaBanca(int valor) {
-		JLabel carta = crearCarta(valor);
-		carta.setForeground(Color.RED);
-		return carta;
-	}
+            btnPedir.setEnabled(false);
+            btnPlantarse.setEnabled(false);
+        });
+
+        btnIniciar.addActionListener(e -> {
+            if (dinero < 100) {
+                JOptionPane.showMessageDialog(this, "No tienes suficiente dinero para apostar 100€", "Dinero insuficiente", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            dinero -= 100; // descontamos apuesta
+            lblDinero.setText("Dinero: " + dinero + " €");
+
+            panelTusCartas.removeAll();
+            panelCartasBanca.removeAll();
+            panelTusCartas.repaint();
+            panelCartasBanca.repaint();
+
+            puntosJugador = 0;
+            puntosBanca = 0;
+            lblPuntosJugador.setText("Jugador: 0");
+            lblPuntosBanca.setText("Banca: 0");
+
+            btnPedir.setEnabled(true);
+            btnPlantarse.setEnabled(true);
+        });
+
+        // Botón VOLVER rojo con efecto
+        btnVolver.setBackground(Color.RED);
+        btnVolver.setForeground(Color.WHITE);
+        btnVolver.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btnVolver.setBackground(new Color(200, 0, 0));
+            }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btnVolver.setBackground(Color.RED);
+            }
+        });
+        btnVolver.addActionListener(e -> {
+            dispose();
+            EventQueue.invokeLater(() -> new PnatallaInicio().setVisible(true));
+        });
+
+        panelBotones.add(btnPedir);
+        panelBotones.add(btnPlantarse);
+        panelBotones.add(btnIniciar);
+        panelBotones.add(btnVolver);
+    }
+
+    // ================= MÉTODOS AUXILIARES =================
+    private JButton crearBoton(String texto) {
+        JButton btn = new JButton(texto);
+        btn.setFont(new Font("Verdana", Font.BOLD, 30));
+        btn.setPreferredSize(new Dimension(400, 80));
+        btn.setBackground(Color.LIGHT_GRAY);
+        return btn;
+    }
+
+    private JLabel crearCarta(int valor) {
+        JLabel carta = new JLabel(String.valueOf(valor), JLabel.CENTER);
+        carta.setPreferredSize(new Dimension(120, 180));
+        carta.setFont(new Font("Arial", Font.BOLD, 40));
+        carta.setOpaque(true);
+        carta.setBackground(Color.WHITE);
+        carta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        return carta;
+    }
+
+    private JLabel crearCartaBanca(int valor) {
+        JLabel carta = crearCarta(valor);
+        carta.setForeground(Color.RED);
+        return carta;
+    }
 }

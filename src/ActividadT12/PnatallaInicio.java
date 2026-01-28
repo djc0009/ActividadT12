@@ -160,7 +160,11 @@ public class PnatallaInicio extends JFrame {
                     EventQueue.invokeLater(() -> new Juego2().setVisible(true));
                     break;
                 case "BLACKJACK":
-                    EventQueue.invokeLater(() -> new Blackjack().setVisible(true));
+                    EventQueue.invokeLater(() -> {
+                        Blackjack blackjack = new Blackjack();
+                        blackjack.setVisible(true);
+                        blackjack.setExtendedState(JFrame.MAXIMIZED_BOTH); // fuerza maximización
+                    });
                     break;
                 case "HIGHER":
                     EventQueue.invokeLater(() -> new HigherOrLower().setVisible(true));
