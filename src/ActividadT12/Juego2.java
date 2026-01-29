@@ -10,37 +10,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.imageio.ImageIO;
 
-/**
- * Juego de Memory - Modo Fácil
- * 10 cartas (5 parejas)
- */
 public class Juego2 extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    // Panel principal de la ventana
     private JPanel contentPane;
-
-    // Panel donde se colocan las cartas
     private JPanel panelCartas;
-
-    // Panel inferior con los botones
     private JPanel panelSur;
-
-    // Contador de parejas encontradas
     private int parejasEncontradas = 0;
-
-    // Cartas seleccionadas por el jugador
     private JButton primeraCarta = null;
     private JButton segundaCarta = null;
-
-    // Bloquea los clics mientras se comparan cartas
     private boolean bloqueo = false;
-
-    // Lista con los nombres de las imágenes (cartas)
     private ArrayList<String> cartas;
-
-    // Lista con los botones de las cartas
     private ArrayList<JButton> botones;
 
     // Imagen del reverso de la carta
