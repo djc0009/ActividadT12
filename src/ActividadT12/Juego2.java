@@ -10,22 +10,40 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.imageio.ImageIO;
 
+/**
+ * Juego de Memory - Modo Fácil
+ * 10 cartas (5 parejas)
+ */
 public class Juego2 extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    // Panel principal de la ventana
     private JPanel contentPane;
+
+    // Panel donde se colocan las cartas
     private JPanel panelCartas;
+
+    // Panel inferior con los botones
     private JPanel panelSur;
 
+    // Contador de parejas encontradas
     private int parejasEncontradas = 0;
+
+    // Cartas seleccionadas por el jugador
     private JButton primeraCarta = null;
     private JButton segundaCarta = null;
+
+    // Bloquea los clics mientras se comparan cartas
     private boolean bloqueo = false;
 
+    // Lista con los nombres de las imágenes (cartas)
     private ArrayList<String> cartas;
+
+    // Lista con los botones de las cartas
     private ArrayList<JButton> botones;
 
+    // Imagen del reverso de la carta
     private ImageIcon reverso;
 
     public static void main(String[] args) {
@@ -40,16 +58,31 @@ public class Juego2 extends JFrame {
     }
 
     public Juego2() {
+        // Configuración general de la ventana
         configurarVentana();
+
+        // Carga del reverso de las cartas
         cargarRecursos();
+
+        // Prepara la lista de cartas y las baraja
         prepararCartas();
+
+        // Título superior
         crearTitulo();
+
+        // Panel central con las cartas
         crearPanelCartas();
+
+        // Panel inferior con botones
         crearPanelSur();
 
+        // Ventana a pantalla completa
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        // Creación de los botones de las cartas
         crearBotonesCartas();
 
+        // Ajusta el tamaño de las cartas al abrir la ventana
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -58,6 +91,9 @@ public class Juego2 extends JFrame {
         });
     }
 
+    /**
+     * Configuración básica de la ventana
+     */
     private void configurarVentana() {
         setTitle("Memory Davante - Modo Fácil");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,14 +104,22 @@ public class Juego2 extends JFrame {
         setContentPane(contentPane);
     }
 
+    /**
+     * Carga los recursos gráficos necesarios
+     */
     private void cargarRecursos() {
+        // Imagen común para todas las cartas boca abajo
         reverso = cargarIconoEscalado("reverso.png", 200, 200);
     }
 
+    /**
+     * Prepara las cartas del juego (pares + barajado)
+     */
     private void prepararCartas() {
         cartas = new ArrayList<>();
         botones = new ArrayList<>();
 
+        // Imágenes disponibles (5 parejas)
         String[] imagenes = {
             "elefante.png",
             "hippo.png",
@@ -84,14 +128,19 @@ public class Juego2 extends JFrame {
             "panda.png"
         };
 
+        // Añadimos cada imagen dos veces (pareja)
         for (String img : imagenes) {
             cartas.add(img);
             cartas.add(img);
         }
 
+        // Mezclamos las cartas
         Collections.shuffle(cartas);
     }
 
+    /**
+     * Crea el título superior del juego
+     */
     private void crearTitulo() {
         JLabel lblTitulo = new JLabel("Memory Davante");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
@@ -101,11 +150,15 @@ public class Juego2 extends JFrame {
         contentPane.add(lblTitulo, BorderLayout.NORTH);
     }
 
+    /**
+     * Panel central donde van las cartas
+     */
     private void crearPanelCartas() {
         panelCartas = new JPanel(new GridLayout(2, 5, 12, 12));
         panelCartas.setBackground(new Color(25, 25, 25));
         contentPane.add(panelCartas, BorderLayout.CENTER);
 
+        // Reescala las cartas cuando se redimensiona la ventana
         panelCartas.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -114,19 +167,25 @@ public class Juego2 extends JFrame {
         });
     }
 
+    /**
+     * Panel inferior con los botones del juego
+     */
     private void crearPanelSur() {
         panelSur = new JPanel(new GridLayout(1, 3, 20, 0));
         panelSur.setBackground(new Color(25, 25, 25));
 
+        // Botón para pasar al modo difícil
         JButton btnModoDificil = crearBotonInferior("Modo Difícil", new Color(60, 140, 255));
         btnModoDificil.addActionListener(e -> {
             dispose();
             new Juego2_2().setVisible(true);
         });
 
+        // Reinicia la partida
         JButton btnReiniciar = crearBotonInferior("Reiniciar", new Color(60, 140, 255));
         btnReiniciar.addActionListener(e -> reiniciarJuego());
 
+        // Sale al menú principal
         JButton btnSalir = crearBotonInferior("Salir", new Color(200, 60, 60));
         btnSalir.addActionListener(e -> {
             dispose();
@@ -140,7 +199,9 @@ public class Juego2 extends JFrame {
         contentPane.add(panelSur, BorderLayout.SOUTH);
     }
 
-
+    /**
+     * Crea botones inferiores con estilo común
+     */
     private JButton crearBotonInferior(String texto, Color color) {
         JButton btn = new JButton(texto);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -153,14 +214,23 @@ public class Juego2 extends JFrame {
         return btn;
     }
 
+    /**
+     * Crea los botones de las cartas
+     */
     private void crearBotonesCartas() {
         panelCartas.removeAll();
         botones.clear();
 
         for (String carta : cartas) {
             JButton boton = new JButton();
+
+            // Guardamos la imagen asociada al botón
             boton.putClientProperty("imagen", carta);
+
+            // Indica si la carta ya está descubierta
             boton.putClientProperty("descubierta", false);
+
+            // Empieza mostrando el reverso
             boton.setIcon(reverso);
             boton.setBackground(new Color(45, 45, 45));
             boton.setFocusPainted(false);
@@ -176,6 +246,9 @@ public class Juego2 extends JFrame {
         panelCartas.repaint();
     }
 
+    /**
+     * Controla el clic sobre una carta
+     */
     private void manejarClick(JButton boton) {
         if (bloqueo) return;
         if ((boolean) boton.getClientProperty("descubierta")) return;
@@ -191,15 +264,24 @@ public class Juego2 extends JFrame {
         }
     }
 
+    /**
+     * Muestra la imagen real de una carta
+     */
     private void mostrarImagen(JButton boton) {
         String img = (String) boton.getClientProperty("imagen");
         boton.setIcon(cargarIconoEscalado(img, boton.getWidth(), boton.getHeight()));
     }
 
+    /**
+     * Vuelve a ocultar una carta
+     */
     private void ocultarImagen(JButton boton) {
         boton.setIcon(reverso);
     }
 
+    /**
+     * Comprueba si las dos cartas seleccionadas forman pareja
+     */
     private void comprobarPareja() {
         bloqueo = true;
 
@@ -207,6 +289,7 @@ public class Juego2 extends JFrame {
         String img2 = (String) segundaCarta.getClientProperty("imagen");
 
         if (img1.equals(img2)) {
+            // Pareja correcta
             primeraCarta.putClientProperty("descubierta", true);
             segundaCarta.putClientProperty("descubierta", true);
 
@@ -215,10 +298,13 @@ public class Juego2 extends JFrame {
             bloqueo = false;
 
             parejasEncontradas++;
+
+            // Si se encuentran todas las parejas
             if (parejasEncontradas == cartas.size() / 2) {
                 JOptionPane.showMessageDialog(this, "¡Juego completado!");
             }
         } else {
+            // Pareja incorrecta → se vuelven a ocultar
             Timer t = new Timer(700, e -> {
                 ocultarImagen(primeraCarta);
                 ocultarImagen(segundaCarta);
@@ -231,6 +317,9 @@ public class Juego2 extends JFrame {
         }
     }
 
+    /**
+     * Reinicia el juego desde cero
+     */
     private void reiniciarJuego() {
         parejasEncontradas = 0;
         primeraCarta = null;
@@ -240,6 +329,9 @@ public class Juego2 extends JFrame {
         crearBotonesCartas();
     }
 
+    /**
+     * Carga una imagen desde resources y la escala
+     */
     private ImageIcon cargarIconoEscalado(String nombre, int w, int h) {
         try {
             var is = getClass().getResourceAsStream("/images/" + nombre);
@@ -253,6 +345,9 @@ public class Juego2 extends JFrame {
         }
     }
 
+    /**
+     * Ajusta el tamaño de las cartas al cambiar la ventana
+     */
     private void redimensionarCartas() {
         for (JButton b : botones) {
             if ((boolean) b.getClientProperty("descubierta")) {
