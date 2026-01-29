@@ -8,7 +8,6 @@ import java.util.Collections;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
-import java.io.File;
 import javax.imageio.ImageIO;
 
 public class Juego2_2 extends JFrame {
@@ -48,13 +47,11 @@ public class Juego2_2 extends JFrame {
         crearPanelCartas();
         crearPanelSur();
 
-        // Tamaño fijo y centrado
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
 
         crearBotonesCartas();
 
-        // Redimensionar cartas después de que la ventana esté visible
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -75,12 +72,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void cargarRecursos() {
-        try {
-            reverso = new ImageIcon(getClass().getResource("/images/reverso.png"));
-        } catch (Exception e) {
-            System.err.println("No se pudo cargar reverso.png, usando icono vacío");
-            reverso = new ImageIcon();
-        }
+        reverso = cargarIconoEscalado("reverso.png", 200, 200);
     }
 
     private void prepararCartas() {
@@ -105,15 +97,14 @@ public class Juego2_2 extends JFrame {
     private void crearTitulo() {
         JLabel lblTitulo = new JLabel("Memory Davante");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 36));
-        lblTitulo.setForeground(new Color(255, 255, 0));
+        lblTitulo.setForeground(Color.YELLOW);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulo.setBorder(new EmptyBorder(10, 0, 20, 0));
         contentPane.add(lblTitulo, BorderLayout.NORTH);
     }
 
     private void crearPanelCartas() {
-        panelCartas = new JPanel();
-        panelCartas.setLayout(new GridLayout(5, 6, 12, 12));
+        panelCartas = new JPanel(new GridLayout(5, 6, 12, 12));
         panelCartas.setBackground(new Color(25, 25, 25));
         contentPane.add(panelCartas, BorderLayout.CENTER);
 
@@ -126,8 +117,7 @@ public class Juego2_2 extends JFrame {
     }
 
     private void crearPanelSur() {
-        panelSur = new JPanel();
-        panelSur.setLayout(new GridLayout(1, 3, 20, 0));
+        panelSur = new JPanel(new GridLayout(1, 3, 20, 0));
         panelSur.setBackground(new Color(25, 25, 25));
 
         JButton btnModoFacil = crearBotonInferior("Modo Fácil", new Color(60, 140, 255));
@@ -160,7 +150,6 @@ public class Juego2_2 extends JFrame {
         btn.setFocusPainted(false);
         btn.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.setUI(new BasicButtonUI());
 
         btn.addMouseListener(new MouseAdapter() {
@@ -183,28 +172,13 @@ public class Juego2_2 extends JFrame {
 
         for (String carta : cartas) {
             JButton boton = new JButton();
-            boton.setFocusPainted(false);
-            boton.setBackground(new Color(45, 45, 45));
-            boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
             boton.putClientProperty("imagen", carta);
             boton.putClientProperty("descubierta", false);
-
             boton.setIcon(reverso);
+            boton.setBackground(new Color(45, 45, 45));
+            boton.setFocusPainted(false);
             boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
             boton.setUI(new BasicButtonUI());
-
-            boton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    if (!(boolean) boton.getClientProperty("descubierta"))
-                        boton.setBorder(BorderFactory.createLineBorder(new Color(120, 120, 120), 3, true));
-                }
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    if (!(boolean) boton.getClientProperty("descubierta"))
-                        boton.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
-                }
-            });
 
             boton.addActionListener(e -> manejarClick(boton));
 
@@ -214,7 +188,6 @@ public class Juego2_2 extends JFrame {
 
         panelCartas.revalidate();
         panelCartas.repaint();
-
         SwingUtilities.invokeLater(this::redimensionarCartas);
     }
 
@@ -235,19 +208,11 @@ public class Juego2_2 extends JFrame {
 
     private void mostrarImagen(JButton boton) {
         String img = (String) boton.getClientProperty("imagen");
-        int w = boton.getWidth();
-        int h = boton.getHeight();
-        if (w > 20 && h > 20) {
-            boton.setIcon(escalarImagen(img, w, h));
-        }
+        boton.setIcon(cargarIconoEscalado(img, boton.getWidth(), boton.getHeight()));
     }
 
     private void ocultarImagen(JButton boton) {
-        int w = boton.getWidth();
-        int h = boton.getHeight();
-        if (w > 20 && h > 20) {
-            boton.setIcon(reverso);
-        }
+        boton.setIcon(reverso);
     }
 
     private void comprobarPareja() {
@@ -260,40 +225,25 @@ public class Juego2_2 extends JFrame {
             primeraCarta.putClientProperty("descubierta", true);
             segundaCarta.putClientProperty("descubierta", true);
 
-            primeraCarta.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 100), 4, true));
-            segundaCarta.setBorder(BorderFactory.createLineBorder(new Color(0, 200, 100), 4, true));
-
             primeraCarta = null;
             segundaCarta = null;
             bloqueo = false;
 
             parejasEncontradas++;
-
             if (parejasEncontradas == cartas.size() / 2) {
-                mostrarMensajeFinal();
+                JOptionPane.showMessageDialog(this, "¡Enhorabuena, has terminado el juego!");
             }
         } else {
-            Timer timer = new Timer(700, e -> {
+            Timer t = new Timer(700, e -> {
                 ocultarImagen(primeraCarta);
                 ocultarImagen(segundaCarta);
-                primeraCarta.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
-                segundaCarta.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 70), 3, true));
                 primeraCarta = null;
                 segundaCarta = null;
                 bloqueo = false;
             });
-            timer.setRepeats(false);
-            timer.start();
+            t.setRepeats(false);
+            t.start();
         }
-    }
-
-    private void mostrarMensajeFinal() {
-        JOptionPane.showMessageDialog(
-            this,
-            "¡Enhorabuena, has terminado el juego!",
-            "Juego completado",
-            JOptionPane.INFORMATION_MESSAGE
-        );
     }
 
     private void reiniciarJuego() {
@@ -305,44 +255,26 @@ public class Juego2_2 extends JFrame {
         crearBotonesCartas();
     }
 
-    private ImageIcon escalarImagen(String nombreArchivo, int ancho, int alto) {
+    private ImageIcon cargarIconoEscalado(String nombre, int w, int h) {
         try {
-            File archivo = new File("src/images/" + nombreArchivo);
-            if (!archivo.exists()) {
-                System.err.println("No se encontró " + nombreArchivo + ", usando reverso");
-                return reverso;
-            }
+            var is = getClass().getResourceAsStream("/images/" + nombre);
+            if (is == null) return new ImageIcon();
 
-            BufferedImage imgOriginal = ImageIO.read(archivo);
-            BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = buffered.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.drawImage(imgOriginal, 0, 0, ancho, alto, null);
-            g2.dispose();
-
-            return new ImageIcon(buffered);
+            BufferedImage original = ImageIO.read(is);
+            Image escalada = original.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+            return new ImageIcon(escalada);
         } catch (Exception e) {
-            System.err.println("Error cargando " + nombreArchivo + ", usando reverso");
-            return reverso;
+            return new ImageIcon();
         }
     }
 
     private void redimensionarCartas() {
-        for (JButton boton : botones) {
-            int w = boton.getWidth();
-            int h = boton.getHeight();
-            if (w > 20 && h > 20) {
-                if ((boolean) boton.getClientProperty("descubierta")) {
-                    String img = (String) boton.getClientProperty("imagen");
-                    boton.setIcon(escalarImagen(img, w, h));
-                } else {
-                    boton.setIcon(reverso);
-                }
+        for (JButton b : botones) {
+            if ((boolean) b.getClientProperty("descubierta")) {
+                mostrarImagen(b);
+            } else {
+                b.setIcon(reverso);
             }
         }
-        panelCartas.revalidate();
-        panelCartas.repaint();
     }
 }
