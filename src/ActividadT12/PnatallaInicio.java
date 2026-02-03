@@ -153,7 +153,7 @@ public class PnatallaInicio extends JFrame {
 
         // ================= Acción JUGAR según el juego =================
         btnJugar.addActionListener(e -> {
-            dispose(); // cerrar menú
+            dispose(); 
 
             switch (tipoJuego) {
                 case "MEMORY":
@@ -163,7 +163,7 @@ public class PnatallaInicio extends JFrame {
                     EventQueue.invokeLater(() -> {
                         Blackjack blackjack = new Blackjack();
                         blackjack.setVisible(true);
-                        blackjack.setExtendedState(JFrame.MAXIMIZED_BOTH); // fuerza maximización
+                        blackjack.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                     });
                     break;
                 case "HIGHER":

@@ -152,7 +152,7 @@ public class HigherOrLower extends JFrame {
 
     public HigherOrLower() {
 
-        setTitle("Higher or Lower - Estadios ⚽");
+        setTitle("Higher or Lower - Estadios ⚽;
 
         setSize(1920, 1080);
 
@@ -196,7 +196,7 @@ public class HigherOrLower extends JFrame {
 
 
 
-        stadiums.add(new Stadium("Camp Nou - Barcelona", 99354, "/images/camp_nou.png"));
+        stadiums.add(new Stadium("Camp Nou - Barcelona", 99354, "/images/camp_nou.png));
 
         stadiums.add(new Stadium("Bernabeu - Real Madrid", 81044, "/images/bernabeu.png"));
 

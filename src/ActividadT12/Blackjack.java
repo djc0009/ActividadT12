@@ -7,10 +7,8 @@ import javax.swing.border.EmptyBorder;
 
 public class Blackjack extends JFrame {
 
-    // ===================== SERIAL =====================
     private static final long serialVersionUID = 1L;
 
-    // ===================== PANELES =====================
     private JPanel contentPane;
 
     // ===================== VARIABLES DE JUEGO =====================
@@ -249,9 +247,7 @@ public class Blackjack extends JFrame {
         return carta;
     }
 
-    /**
-     * Crea una carta para la banca
-     */
+   
     private JLabel crearCartaBanca(int valor) {
         JLabel carta = crearCarta(valor);
         carta.setForeground(Color.RED);
