@@ -149,7 +149,9 @@ public class Juego2 extends JFrame {
     }
 
     /**
-     * Panel inferior con los botones del juego
+     * Panel inferior co   	º
+     *1#.@
+     *n los botones del juego
      */
     private void crearPanelSur() {
         panelSur = new JPanel(new GridLayout(1, 3, 20, 0));
@@ -159,7 +161,8 @@ public class Juego2 extends JFrame {
         JButton btnModoDificil = crearBotonInferior("Modo Difícil", new Color(60, 140, 255));
         btnModoDificil.addActionListener(e -> {
             dispose();
-            new Juego2_2().setVisible(true);
+            Juego2_2 juego = null;
+            juego.setVisible(true); 
         });
 
         // Reinicia la partida
